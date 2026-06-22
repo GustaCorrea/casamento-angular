@@ -5,6 +5,9 @@ import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { SharedModule } from './shared/shared-module';
 import { CoreModule } from './core/core-module';
+import { AuthModule } from './modules/auth/auth-module';
+import { InviteModule } from './modules/invite/invite-module';
+import { MarketplaceModule } from './modules/marketplace/marketplace-module';
 
 @NgModule({
   declarations: [
@@ -14,7 +17,10 @@ import { CoreModule } from './core/core-module';
     BrowserModule,
     AppRoutingModule,
     CoreModule,
-    SharedModule
+    SharedModule,
+    AuthModule,
+    InviteModule,
+    MarketplaceModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
