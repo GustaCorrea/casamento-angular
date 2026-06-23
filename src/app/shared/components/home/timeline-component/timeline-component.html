@@ -1,7 +1,7 @@
 <section class="pt-24 px-6" style="background: #f3e8e2;">
     <div class="max-w-3xl mx-auto">
         <div class="text-center mb-16">
-            <p class="uppercase tracking-[0.2em] text-sm mb-3" style="color: #c9a882;">
+            <p class="uppercase tracking-[0.2em] text-lg mb-3" style="color: #c9a882;">
                 Programação
             </p>
             <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #2c1f14; font-weight: 400;">
@@ -9,20 +9,24 @@
             </h2>
         </div>
         <div class="relative">
-            <div class="absolute left-[28px] md:left-[calc(50%-1px)] top-0 bottom-0 w-px" style="background: rgba(139, 94, 82, 0.2);">
+            <div class="absolute left-7 md:left-[calc(50%-1px)] top-0 bottom-0 w-px" style="background: rgba(139, 94, 82, 0.2);">
             </div>
 
             <div class="space-y-10">
-                <div *ngFor="let item of scheduleItems; let i = index" class="flex items-start gap-6 relative"
+                <div *ngFor="let item of timeline; let i = index" class="flex items-start gap-6 relative"
                     [ngClass]="i % 2 === 0 ? 'flex-row' : 'md:flex-row-reverse flex-row'">
 
-                    <div class="flex-1 pl-[50px] md:pl-0" [ngClass]="i % 2 === 0 ? 'md:text-right text-left' : 'text-left'">
-                        <p class="text-sm mb-1" style="color: #c9a882; letter-spacing: 0.1em;">
+                    <div class="flex-1 pl-12.5 md:pl-0" [ngClass]="i % 2 === 0 ? 'md:text-right text-left' : 'text-left'">
+                        <p class="md:text-md text-sm mb-1" style="color: #c9a882; letter-spacing: 0.1em;">
                             {{ item.time }}
                         </p>
                         <p
-                            style="font-family: 'Playfair Display', serif; color: #2c1f14; font-weight: 500;" class="text-[1.05rem] md:text-[1.1rem]">
+                            style="font-family: 'Playfair Display', serif; color: #2c1f14; font-weight: 500;" class="text-[1.05rem] md:text-[1.3rem]">
                             {{ item.event }}
+                        </p>
+                        <p
+                            style="font-family: 'Playfair Display', serif; color: rgb(122, 98, 89); font-weight: 500;" class="text-[1.05rem] md:text-[1.2rem]">
+                            {{ item.location }}
                         </p>
                         <p class="text-sm flex items-center gap-1 mt-1" style="color: #7a6259;"
                             [ngStyle]="{'justify-content': i % 2 === 0 ? '' : 'flex-start'}"

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CronogramaComponent } from './cronograma-component';
+import { TimelineComponent } from './timeline-component';
 
-describe('CronogramaComponent', () => {
-  let component: CronogramaComponent;
-  let fixture: ComponentFixture<CronogramaComponent>;
+describe('TimelineComponent', () => {
+  let component: TimelineComponent;
+  let fixture: ComponentFixture<TimelineComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CronogramaComponent],
+      declarations: [TimelineComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CronogramaComponent);
+    fixture = TestBed.createComponent(TimelineComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

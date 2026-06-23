@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 
-
 @Component({
-  selector: 'cronograma-component',
+  selector: 'home-timeline-component',
   standalone: false,
-  templateUrl: './cronograma-component.html'
+  templateUrl: './timeline-component.html',
 })
-export class CronogramaComponent {
-  scheduleItems = [
+export class TimelineComponent {
+  timeline = [
     { time: "14:00", event: "Cerimônia Civil", location: "Cartório Central", icon: "heart" },
     { time: "16:00", event: "Cerimônia Religiosa", location: "Igreja Nossa Senhora das Graças", icon: "heart" },
     { time: "18:00", event: "Coquetel de Boas-Vindas", location: "Salão Jardim", icon: "map-pin" },

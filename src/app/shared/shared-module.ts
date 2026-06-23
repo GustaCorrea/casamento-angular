@@ -5,8 +5,7 @@ import { HeaderComponent } from './components/layouts/header-component/header-co
 import { HomePage } from './pages/home-page/home-page';
 import { AppRoutingModule } from '../app-routing-module';
 import { FooterComponent } from './components/layouts/footer-component/footer-component';
-import { CronogramaComponent } from './components/home-page/cronograma-component/cronograma-component';
-import { HistoriaComponent } from './components/home-page/historia-component/historia-component';
+import { TimelineComponent } from './components/home/timeline-component/timeline-component';
 
 @NgModule({
   declarations: [
@@ -14,10 +13,9 @@ import { HistoriaComponent } from './components/home-page/historia-component/his
     HeaderComponent,
     HomePage,
     FooterComponent,
-    CronogramaComponent,
-    HistoriaComponent,
+    TimelineComponent,
   ],
   imports: [CommonModule, AppRoutingModule],
-  exports: [HeaderComponent, FooterComponent, CronogramaComponent, HistoriaComponent],
+  exports: [HeaderComponent, FooterComponent],
 })
-export class SharedModule { }
+export class SharedModule {}
