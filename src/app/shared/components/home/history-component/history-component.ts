@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'historia-component',
+  selector: 'home-history-component',
   standalone: false,
-  templateUrl: './historia-component.html'
+  templateUrl: './history-component.html'
 })
-export class HistoriaComponent {
+export class HistoryComponent {
   photos = [
     { src: "/image/primeiro-encontro.jpg.webp", caption: "Nosso primeiro encontro" },
     { src: "/image/PedidoCasamento.png", caption: "O pedido de casamento" },

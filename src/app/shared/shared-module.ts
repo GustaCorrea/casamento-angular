@@ -6,6 +6,7 @@ import { HomePage } from './pages/home-page/home-page';
 import { AppRoutingModule } from '../app-routing-module';
 import { FooterComponent } from './components/layouts/footer-component/footer-component';
 import { TimelineComponent } from './components/home/timeline-component/timeline-component';
+import { HistoryComponent } from './components/home/history-component/history-component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { TimelineComponent } from './components/home/timeline-component/timeline
     HomePage,
     FooterComponent,
     TimelineComponent,
+    HistoryComponent,
   ],
   imports: [CommonModule, AppRoutingModule],
   exports: [HeaderComponent, FooterComponent],
