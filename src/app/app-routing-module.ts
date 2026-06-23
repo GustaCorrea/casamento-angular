@@ -5,6 +5,7 @@ import { HomePage } from './shared/pages/home-page/home-page';
 import { AuthLayout } from './core/layouts/auth-layout/auth-layout';
 import { LoginPage } from './modules/auth/pages/login-page/login-page';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
+import { authGuard } from './core/guards/auth-guard';
 
 const routes: Routes = [
   {
@@ -27,6 +28,7 @@ const routes: Routes = [
     // Layout do Painel Administrador
     path: "system",
     component: AdminLayout,
+    canActivate: [authGuard],
     children: []
   }
 ];
