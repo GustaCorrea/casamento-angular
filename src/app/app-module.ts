@@ -9,10 +9,9 @@ import { AuthModule } from './modules/auth/auth-module';
 import { InviteModule } from './modules/invite/invite-module';
 import { MarketplaceModule } from './modules/marketplace/marketplace-module';
 
+
 @NgModule({
-  declarations: [
-    App
-  ],
+  declarations: [App],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -20,11 +19,9 @@ import { MarketplaceModule } from './modules/marketplace/marketplace-module';
     SharedModule,
     AuthModule,
     InviteModule,
-    MarketplaceModule
+    MarketplaceModule,
   ],
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-  ],
-  bootstrap: [App]
+  providers: [provideBrowserGlobalErrorListeners()],
+  bootstrap: [App],
 })
 export class AppModule { }
