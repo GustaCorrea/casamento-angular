@@ -1,0 +1,42 @@
+<section class="pt-24 px-6" style="background: #f3e8e2;">
+    <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-16">
+            <p class="uppercase tracking-[0.2em] text-sm mb-3" style="color: #c9a882;">
+                Programação
+            </p>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #2c1f14; font-weight: 400;">
+                Cronograma do dia
+            </h2>
+        </div>
+        <div class="relative">
+            <div class="absolute left-[28px] md:left-[calc(50%-1px)] top-0 bottom-0 w-px" style="background: rgba(139, 94, 82, 0.2);">
+            </div>
+
+            <div class="space-y-10">
+                <div *ngFor="let item of scheduleItems; let i = index" class="flex items-start gap-6 relative"
+                    [ngClass]="i % 2 === 0 ? 'flex-row' : 'md:flex-row-reverse flex-row'">
+
+                    <div class="flex-1 pl-[50px] md:pl-0" [ngClass]="i % 2 === 0 ? 'md:text-right text-left' : 'text-left'">
+                        <p class="text-sm mb-1" style="color: #c9a882; letter-spacing: 0.1em;">
+                            {{ item.time }}
+                        </p>
+                        <p
+                            style="font-family: 'Playfair Display', serif; color: #2c1f14; font-weight: 500;" class="text-[1.05rem] md:text-[1.1rem]">
+                            {{ item.event }}
+                        </p>
+                        <p class="text-sm flex items-center gap-1 mt-1" style="color: #7a6259;"
+                            [ngStyle]="{'justify-content': i % 2 === 0 ? '' : 'flex-start'}"
+                            [ngClass]="i % 2 === 0 ? 'md:justify-end justify-start' : 'justify-start'">
+                        </p>
+                    </div>
+
+                    <div class="absolute left-3 md:static md:left-auto z-10 shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center"
+                        style="background: #fdf8f4; border-color: #8b5e52; top: 0;">
+                    </div>
+
+                    <div class="hidden md:block flex-1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
