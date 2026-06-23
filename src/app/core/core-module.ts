@@ -11,4 +11,4 @@ import { AdminLayout } from './layouts/admin-layout/admin-layout';
   imports: [CommonModule, RouterModule, SharedModule],
   exports: [MainLayout, AuthLayout, AdminLayout],
 })
-export class CoreModule {}
+export class CoreModule { }
