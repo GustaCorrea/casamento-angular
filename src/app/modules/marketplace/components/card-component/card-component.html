@@ -1,0 +1,33 @@
+<div class="bg-surface-container-low rounded-xl overflow-hidden card-ambient-shadow border border-surface-container transition-transform hover:-translate-y-1 duration-300">
+  <div class="relative aspect-[4/3] w-full">
+    <img class="w-full h-full object-cover" [src]="gift.imageUrl" [attr.data-alt]="gift.imageAlt"/>
+    <div class="absolute top-4 left-4">
+      <span class="bg-surface-bright/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-secondary font-label-md text-[12px] uppercase tracking-widest shadow-sm">
+        {{ gift.category }}
+      </span>
+    </div>
+  </div>
+  <div class="p-6">
+    <h3 class="font-headline-md text-headline-md text-primary mb-2">{{ gift.title }}</h3>
+    <p class="font-body-md text-body-md text-on-surface-variant mb-stack-md">{{ gift.description }}</p>
+    
+    <div class="space-y-stack-sm">
+      <div class="flex justify-between items-end font-label-md text-label-md text-primary">
+        <span>R$ {{ gift.currentAmount | number:'1.0-2' }}</span>
+        <span>{{ gift.targetAmount ? (gift.currentAmount / gift.targetAmount * 100) : 0 | number:'1.0-0' }}%</span>
+      </div>
+      
+      <div class="w-full h-1.5 bg-outline-variant rounded-full overflow-hidden">
+        <div class="h-full bg-primary rounded-full transition-all duration-1000" [style.width.%]="gift.targetAmount ? (gift.currentAmount / gift.targetAmount * 100) : 0"></div>
+      </div>
+      
+      <div class="flex justify-between items-center pt-2">
+        <span class="font-body-md text-body-md text-secondary">Meta: R$ {{ gift.targetAmount | number:'1.0-2' }}</span>
+        <button (click)="contribute()" class="flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-lg hover:bg-primary-container transition-colors shadow-sm">
+          <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">card_giftcard</span>
+          <span class="font-label-md text-label-md">Contribuir</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

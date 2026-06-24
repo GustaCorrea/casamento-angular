@@ -1,6 +1,7 @@
 <div style="font-family: 'Lato', sans-serif; background: #fdf8f4; min-height: 100vh;">
 
   <div class="pt-28 pb-24 px-6 max-w-6xl mx-auto">
+    
     <div class="text-center mb-12">
       <p class="uppercase tracking-[0.2em] text-sm mb-3" style="color: #c9a882">Lista de</p>
       <h1 style="font-family: 'Playfair Display', serif; font-size: 2.8rem; color: #2c1f14; font-weight: 400">Presentes</h1>
@@ -10,63 +11,50 @@
     </div>
 
     <div class="flex flex-wrap justify-center gap-3 mb-10">
-      <button
-        *ngFor="let cat of categories"
-        (click)="setFilter(cat)"
-        class="px-5 py-2 rounded-full text-sm transition-all"
-        [style.background]="filter === cat ? '#8b5e52' : 'transparent'"
-        [style.color]="filter === cat ? 'white' : '#7a6259'"
-        [style.border]="'1px solid ' + (filter === cat ? '#8b5e52' : 'rgba(139,94,82,0.3)')"
-      >
-        {{ cat }}
-      </button>
+      @for (cat of categories; track cat) {
+        <button
+          (click)="setFilter(cat)"
+          class="px-5 py-2 rounded-full text-sm transition-all"
+          [style.background]="filter === cat ? '#8b5e52' : 'transparent'"
+          [style.color]="filter === cat ? 'white' : '#7a6259'"
+          [style.border]="'1px solid ' + (filter === cat ? '#8b5e52' : 'rgba(139,94,82,0.3)')"
+        >
+          {{ cat }}
+        </button>
+      }
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div *ngFor="let gift of filteredGifts" class="rounded-lg overflow-hidden" style="background: #fffaf6; border: 1px solid rgba(139,94,82,0.12)">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (gift of filteredGifts; track gift.id) {
         
-        <div class="relative overflow-hidden h-44">
-          <img [src]="gift.image" [alt]="gift.name" class="w-full h-full object-cover" />
-          <span class="absolute top-3 left-3 text-xs px-2 py-1 rounded-full" style="background: rgba(255,250,246,0.9); color: #8b5e52">{{ gift.category }}</span>
-          
-          <div *ngIf="isComplete(gift)" class="absolute inset-0 flex items-center justify-center" style="background: rgba(44,31,20,0.55)">
-            <div class="flex items-center gap-2 text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span class="text-sm">Presente completo!</span>
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+          <img src="{{ gift.imageUrl }}" alt="{{ gift.title }}" class="w-full h-48 object-cover">
+          <div class="p-4">
+            <h3 class="font-semibold text-lg text-[#2c1f14]">{{ gift.title }}</h3>
+            <p class="text-sm text-[#7a6259] mt-2">{{ gift.description }}</p>
+
+            <div class="mt-4">
+              <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                <div class="h-2 bg-[#8b5e52]" [style.width]="getPercentage(gift) + '%'">
+                </div>
+              </div>
+              <div class="flex justify-between items-center mt-2 text-sm text-[#7a6259]">
+                <span>R$ {{ gift.currentAmount }}</span>
+                <span>R$ {{ gift.targetAmount }}</span>
+              </div>
+            </div>
+
+            <div class="mt-4 text-center">
+              <button (click)="openModal(gift)" class="px-4 py-2 bg-[#8b5e52] text-white rounded-md">Contribuir</button>
             </div>
           </div>
         </div>
 
-        <div class="p-5">
-          <h3 style="font-family: 'Playfair Display', serif; font-size: 1.05rem; color: #2c1f14; margin-bottom: 4px">{{ gift.name }}</h3>
-          <p class="text-xs mb-4" style="color: #7a6259">{{ gift.description }}</p>
-          
-          <div class="mb-1 flex justify-between text-xs" style="color: #7a6259">
-            <span>R$ {{ gift.raised.toLocaleString('pt-BR') }}</span>
-            <span>{{ getPercentage(gift) }}%</span>
-          </div>
-          
-          <div class="h-1.5 rounded-full mb-4" style="background: #ede3dc">
-            <div class="h-full rounded-full transition-all" [style.width]="getPercentage(gift) + '%'" style="background: #8b5e52"></div>
-          </div>
-
-          <div class="flex justify-between items-center">
-            <span class="text-xs" style="color: #7a6259">Meta: R$ {{ gift.goal.toLocaleString('pt-BR') }}</span>
-            
-            <button
-              (click)="openModal(gift)"
-              [disabled]="isComplete(gift)"
-              class="flex items-center gap-2 px-4 py-2 rounded text-sm transition-opacity hover:opacity-80"
-              [style.background]="isComplete(gift) ? '#ede3dc' : '#8b5e52'"
-              [style.color]="isComplete(gift) ? '#7a6259' : 'white'"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
-              {{ isComplete(gift) ? 'Completo' : 'Contribuir' }}
-            </button>
-          </div>
-
+      } @empty {
+        <div class="col-span-full text-center py-12 text-secondary font-body-md">
+          Nenhum presente encontrado nesta categoria.
         </div>
-      </div>
+      }
     </div>
 
   </div>
