@@ -6,11 +6,12 @@ import { ApiService } from '../../../core/services/api-service';
 export interface Convidado {
   id?: number;
   nome: string;
-  email: string;
-  telefone: string;
+  email?: string;
+  telefone?: string;
   restricoes: string;
   limiteAcompanhantes: number;
   status: 'Confirmado' | 'Aguardando' | 'Recusado';
+  acompanhantes?: { nome: string, email?: string, telefone?: string }[];
 }
 
 @Injectable({
