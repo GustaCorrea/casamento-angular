@@ -3,6 +3,7 @@ import { GiftItem } from '../../constants/GiftItem';
 
 @Component({
   selector: 'app-prize-page',
+  standalone: false,
   templateUrl: './prize-page.html',
 })
 export class PrizePage {

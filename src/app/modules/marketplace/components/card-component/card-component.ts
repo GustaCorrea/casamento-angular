@@ -4,12 +4,14 @@ import { GiftItem } from '../../constants/GiftItem';
 @Component({
   selector: 'marketplace-card-component',
   standalone: false,
-  templateUrl: './card-component.html',
-  styleUrl: './card-component.css',
+  templateUrl: './card-component.html'
 })
 export class CardComponent {
-  @Input({ required: true }) gift!: GiftItem;
-  
+  @Input() gift!: GiftItem;
+
+  // Recebe a função do pai. Ela aceita um GiftItem e retorna um número.
+  @Input() getPercentage!: (gift: GiftItem) => number;
+
   @Output() onContribute = new EventEmitter<GiftItem>();
 
   contribute(): void {

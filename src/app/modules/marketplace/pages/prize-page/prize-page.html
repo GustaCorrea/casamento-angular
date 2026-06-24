@@ -1,7 +1,7 @@
 <div style="font-family: 'Lato', sans-serif; background: #fdf8f4; min-height: 100vh;">
 
   <div class="pt-28 pb-24 px-6 max-w-6xl mx-auto">
-    
+
     <div class="text-center mb-12">
       <p class="uppercase tracking-[0.2em] text-sm mb-3" style="color: #c9a882">Lista de</p>
       <h1 style="font-family: 'Playfair Display', serif; font-size: 2.8rem; color: #2c1f14; font-weight: 400">Presentes</h1>
@@ -26,29 +26,8 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (gift of filteredGifts; track gift.id) {
-        
-        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-          <img src="{{ gift.imageUrl }}" alt="{{ gift.title }}" class="w-full h-48 object-cover">
-          <div class="p-4">
-            <h3 class="font-semibold text-lg text-[#2c1f14]">{{ gift.title }}</h3>
-            <p class="text-sm text-[#7a6259] mt-2">{{ gift.description }}</p>
 
-            <div class="mt-4">
-              <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                <div class="h-2 bg-[#8b5e52]" [style.width]="getPercentage(gift) + '%'">
-                </div>
-              </div>
-              <div class="flex justify-between items-center mt-2 text-sm text-[#7a6259]">
-                <span>R$ {{ gift.currentAmount }}</span>
-                <span>R$ {{ gift.targetAmount }}</span>
-              </div>
-            </div>
-
-            <div class="mt-4 text-center">
-              <button (click)="openModal(gift)" class="px-4 py-2 bg-[#8b5e52] text-white rounded-md">Contribuir</button>
-            </div>
-          </div>
-        </div>
+        <marketplace-card-component [gift]="gift" [getPercentage]="getPercentage" ></marketplace-card-component>
 
       } @empty {
         <div class="col-span-full text-center py-12 text-secondary font-body-md">
