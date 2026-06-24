@@ -7,6 +7,8 @@ import { LoginPage } from './modules/auth/pages/login-page/login-page';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
 import { authGuard } from './core/guards/auth-guard';
 
+import { AdmGuestsComponent } from './modules/admin/pages/adm-guests-page/admin-guests-page';
+
 const routes: Routes = [
   {
     // Layout público
@@ -28,8 +30,9 @@ const routes: Routes = [
     // Layout do Painel Administrador
     path: "system",
     component: AdminLayout,
-    canActivate: [authGuard],
-    children: []
+    children: [
+      { path: "guests", component: AdmGuestsComponent }
+    ]
   }
 ];
 
