@@ -11,9 +11,10 @@ import { MarketplaceModule } from './modules/marketplace/marketplace-module';
 import { CoreModule } from './core/core-module';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { AdminModule } from './modules/admin/admin-module';
+import { Modal } from './marktplace/components/modal/modal';
 
 @NgModule({
-  declarations: [App],
+  declarations: [App, Modal],
   imports: [
     BrowserModule,
     AppRoutingModule,

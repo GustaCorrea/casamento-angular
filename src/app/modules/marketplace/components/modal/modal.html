@@ -1,0 +1,74 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+  
+  <div class="relative bg-white w-full max-w-md rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+    
+    <button (click)="closeModal()" aria-label="Fechar" class="absolute top-4 right-4 z-10 text-brand-text hover:text-gray-800 transition-colors drop-shadow-md">
+      <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <div class="absolute inset-0 z-0">
+      <img [src]="gift?.imageUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuA0OZ90kTMhls9CVg7pz49ztn-k0MJTzk1jNzXA5BFCXRk6osPHPF84FPvWfy5rde5wzDNikmW9UZQRm7NWI5PHq43c-uiNUdXcixV_Od4toVSsdhKNwxGQw3yAl3k-gbXQyyoZrtnPvNXb8omW5TkFxeIqFxCiUlkiF-NfksLiADi7msTPQ4ep8PBpzhqtqJXefPIsufPFIYY1oGQ1cHqAp8JvBfdFuiKulbBEw16xxCCIweOmb-F9-YhTg0eYyTUoI8b0oo7hcm7j'" alt="Background" class="w-full h-full object-cover"/>
+    </div>
+
+    <div class="relative z-10 p-6 md:p-8 space-y-6 bg-white/60 backdrop-blur-sm">
+      <div class="text-left">
+        <h2 class="text-2xl md:text-3xl font-serif text-brand-text mb-1">{{ gift?.title || 'Contribuição' }}</h2>
+        <p class="text-brand-muted text-sm md:text-base">Escolha o valor da sua contribuição</p>
+      </div>
+
+      <div class="grid grid-cols-4 gap-2">
+        @for (val of predefinedValues; track val) {
+          <button 
+            (click)="selectValue(val)"
+            [class.bg-brand-brown]="selectedValue === val && !customValue"
+            [class.text-white]="selectedValue === val && !customValue"
+            class="bg-brand-input-bg hover:bg-brand-input-border transition-colors py-2 px-1 rounded-md text-brand-text font-medium text-sm">
+            R$ {{ val }}
+          </button>
+        }
+      </div>
+
+      <form (ngSubmit)="submitContribution()" class="space-y-3">
+        <div class="relative">
+          <input 
+            type="number" 
+            [value]="customValue"
+            name="customValue"
+            (input)="customValue = $any($event.target).valueAsNumber || 0; selectedValue = 0"
+            class="w-full bg-brand-input-bg/80 border-brand-input-border rounded-lg p-4 text-brand-text placeholder-brand-muted focus:ring-1 focus:ring-brand-brown focus:outline-none" 
+            placeholder="Outro valor (R$)"/>
+        </div>
+        
+        <div class="relative">
+          <input 
+            type="text" 
+            [value]="donorName"
+            name="donorName"
+            required
+            (input)="donorName = $any($event.target).value"
+            class="w-full bg-brand-input-bg/80 border-brand-input-border rounded-lg p-4 text-brand-text placeholder-brand-muted focus:ring-1 focus:ring-brand-brown focus:outline-none" 
+            placeholder="Seu nome"/>
+        </div>
+        
+        <div class="relative">
+          <textarea 
+            [value]="message"
+            name="message"
+            (input)="message = $any($event.target).value"
+            class="w-full bg-brand-input-bg/80 border-brand-input-border rounded-lg p-4 text-brand-text placeholder-brand-muted focus:ring-1 focus:ring-brand-brown focus:outline-none resize-none" 
+            placeholder="Deixe uma mensagem carinhosa (opcional)" rows="3"></textarea>
+        </div>
+        
+        <div class="pt-4">
+          <button 
+            type="submit"
+            class="w-full bg-brand-brown hover:bg-opacity-90 text-white font-medium py-4 rounded-lg transition-all shadow-lg active:scale-[0.98]">
+            Contribuir com R$ {{ customValue ? customValue : selectedValue }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
