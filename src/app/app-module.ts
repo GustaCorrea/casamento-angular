@@ -10,8 +10,7 @@ import { InviteModule } from './modules/invite/invite-module';
 import { MarketplaceModule } from './modules/marketplace/marketplace-module';
 import { CoreModule } from './core/core-module';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
-
-
+import { AdminModule } from './modules/admin/admin-module';
 
 @NgModule({
   declarations: [App],
@@ -23,6 +22,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
     AuthModule,
     InviteModule,
     MarketplaceModule,
+    AdminModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
