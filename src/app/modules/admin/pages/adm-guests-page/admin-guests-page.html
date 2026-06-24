@@ -1,0 +1,316 @@
+<div class="space-y-6 p-4 md:p-8" style="font-family: 'Lato', sans-serif;">
+
+    <div class="flex justify-between items-center">
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: #2c1f14;">
+            Gerenciamento de Convidados
+        </h2>
+        <button (click)="openModal()"
+            class="flex items-center gap-2 px-4 py-2 rounded text-sm text-white transition-opacity hover:opacity-90"
+            style="background: #8b5e52;"> Novo Convidado
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="rounded-lg p-4 text-center shadow-sm"
+            style="background: #fffaf6; border: 1px solid rgba(139,94,82,0.12);">
+            <p style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #8b5e52;">{{ totalConvidados }}
+            </p>
+            <p class="text-xs mt-1 uppercase tracking-wider" style="color: #7a6259;">Total de Famílias</p>
+        </div>
+        <div class="rounded-lg p-4 text-center shadow-sm"
+            style="background: #fffaf6; border: 1px solid rgba(139,94,82,0.12);">
+            <p style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #2e7d32;">{{ confirmados }}</p>
+            <p class="text-xs mt-1 uppercase tracking-wider" style="color: #7a6259;">Confirmados</p>
+        </div>
+        <div class="rounded-lg p-4 text-center shadow-sm"
+            style="background: #fffaf6; border: 1px solid rgba(139,94,82,0.12);">
+            <p style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #e65100;">{{ aguardando }}</p>
+            <p class="text-xs mt-1 uppercase tracking-wider" style="color: #7a6259;">Aguardando</p>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3 items-center bg-white p-4 rounded-lg shadow-sm"
+        style="border: 1px solid rgba(139,94,82,0.12);">
+        <div class="relative flex-1 min-w-[200px]">
+            <input type="text" [(ngModel)]="searchQuery" placeholder="Buscar por nome, e-mail ou telefone..."
+                class="w-full pl-10 pr-4 py-2 rounded text-sm outline-none transition-colors"
+                style="border: 1px solid rgba(139,94,82,0.25); background: #fdf8f4; color: #2c1f14;" />
+        </div>
+        <div class="flex gap-2">
+            <button (click)="filterStatus = 'Todos'"
+                [ngStyle]="{'background': filterStatus === 'Todos' ? '#8b5e52' : '#fdf8f4', 'color': filterStatus === 'Todos' ? 'white' : '#8b5e52'}"
+                class="px-4 py-2 rounded text-sm transition-colors border border-[#8b5e52]">Todos</button>
+            <button (click)="filterStatus = 'Confirmado'"
+                [ngStyle]="{'background': filterStatus === 'Confirmado' ? '#8b5e52' : '#fdf8f4', 'color': filterStatus === 'Confirmado' ? 'white' : '#8b5e52'}"
+                class="px-4 py-2 rounded text-sm transition-colors border border-[#8b5e52]">Confirmados</button>
+            <button (click)="filterStatus = 'Aguardando'"
+                [ngStyle]="{'background': filterStatus === 'Aguardando' ? '#8b5e52' : '#fdf8f4', 'color': filterStatus === 'Aguardando' ? 'white' : '#8b5e52'}"
+                class="px-4 py-2 rounded text-sm transition-colors border border-[#8b5e52]">Aguardando</button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg overflow-hidden shadow-sm" style="border: 1px solid rgba(139,94,82,0.12);">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="text-xs uppercase tracking-wider" style="background: #f3e8e2; color: #7a6259;">
+                        <th class="px-4 py-3 font-medium">Convidado Principal</th>
+                        <th class="px-4 py-3 font-medium">Contato</th>
+                        <th class="px-4 py-3 font-medium text-center">Limite Acomp.</th>
+                        <th class="px-4 py-3 font-medium">Status</th>
+                        <th class="px-4 py-3 font-medium text-right">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let guest of convidados | filterAdmGuests:searchQuery:filterStatus">
+                        <tr class="border-t hover:bg-stone-50 transition-colors"
+                            style="border-color: rgba(139,94,82,0.08);">
+                            <td class="px-4 py-4">
+                                <div class="text-sm font-medium" style="color: #2c1f14;">{{ guest.nome }}</div>
+                                <div class="text-xs mt-1" style="color: #7a6259;">
+                                    {{ guest.acompanhantes?.length || 0 }} acompanhantes
+                                </div>
+                            </td>
+                            <td class="px-4 py-4">
+                                <div class="text-sm" style="color: #2c1f14;">{{ guest.email }}</div>
+                                <div class="text-xs" style="color: #7a6259;">{{ guest.telefone }}</div>
+                            </td>
+                            <td class="px-4 py-4 text-center">
+                                <span class="px-2 py-1 bg-stone-100 rounded text-sm font-medium"
+                                    style="color: #8b5e52;">{{
+                                    guest.limiteAcompanhantes }}</span>
+                            </td>
+                            <td class="px-4 py-4">
+                                <span *ngIf="guest.status === 'Confirmado'"
+                                    class="px-3 py-1 rounded-full text-xs font-medium"
+                                    style="background: #e8f5e9; color: #2e7d32;">Confirmado</span>
+                                <span *ngIf="guest.status === 'Aguardando'"
+                                    class="px-3 py-1 rounded-full text-xs font-medium"
+                                    style="background: #fff3e0; color: #e65100;">Aguardando</span>
+                                <span *ngIf="guest.status === 'Recusado'"
+                                    class="px-3 py-1 rounded-full text-xs font-medium"
+                                    style="background: #fde8e8; color: #c0392b;">Recusado</span>
+                            </td>
+                            <td class="px-4 py-4 text-right flex items-center justify-end gap-2">
+                                <button (click)="openCompanionModal(guest)"
+                                    class="px-3 py-1.5 rounded text-xs transition-colors bg-stone-100 hover:bg-stone-200 font-medium"
+                                    style="color: #2e7d32;" title="Adicionar Acompanhante">
+                                    + Acompanhante
+                                </button>
+                                <button (click)="openModal(guest)"
+                                    class="px-3 py-1.5 rounded text-xs transition-colors bg-stone-100 hover:bg-stone-200 font-medium"
+                                    style="color: #8b5e52;" title="Editar">
+                                    Editar
+                                </button>
+                                <button (click)="deleteGuest(guest.id!)"
+                                    class="px-3 py-1.5 rounded text-xs transition-colors bg-red-50 hover:bg-red-100 font-medium"
+                                    style="color: #c0392b;" title="Excluir">
+                                    Excluir
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngFor="let comp of guest.acompanhantes; let i = index" class="border-t bg-[#faf7f5]"
+                            style="border-color: rgba(139,94,82,0.04);">
+                            <td class="px-4 py-2 pl-8 border-l-4" style="border-color: rgba(139,94,82,0.3);">
+                                <div class="text-sm flex items-center gap-2" style="color: #5d4841;">
+                                    <span class="opacity-50">↳</span>
+                                    {{ comp.nome }}
+                                </div>
+                            </td>
+                            <td class="px-4 py-2">
+                                <div class="text-sm" style="color: #5d4841;">{{ comp.email }}</div>
+                                <div class="text-xs" style="color: #7a6259;">{{ comp.telefone }}</div>
+                            </td>
+                            <td class="px-4 py-2 text-center"></td>
+                            <td class="px-4 py-2">
+                                <span *ngIf="guest.status === 'Confirmado'"
+                                    class="px-2 py-0.5 rounded-full text-[10px] font-medium"
+                                    style="background: #e8f5e9; color: #2e7d32;">Confirmado</span>
+                                <span *ngIf="guest.status === 'Aguardando'"
+                                    class="px-2 py-0.5 rounded-full text-[10px] font-medium"
+                                    style="background: #fff3e0; color: #e65100;">Aguardando</span>
+                                <span *ngIf="guest.status === 'Recusado'"
+                                    class="px-2 py-0.5 rounded-full text-[10px] font-medium"
+                                    style="background: #fde8e8; color: #c0392b;">Recusado</span>
+                            </td>
+                            <td class="px-4 py-2 text-right flex items-center justify-end gap-2">
+                                <button (click)="openCompanionModal(guest, i)"
+                                    class="px-2 py-1 rounded text-xs transition-colors bg-stone-100 hover:bg-stone-200 font-medium"
+                                    style="color: #8b5e52;" title="Editar Acompanhante">
+                                    Editar
+                                </button>
+                                <button (click)="deleteCompanion(guest, i)"
+                                    class="px-2 py-1 rounded text-xs transition-colors bg-red-50 hover:bg-red-100 font-medium"
+                                    style="color: #c0392b;" title="Excluir Acompanhante">
+                                    Excluir
+                                </button>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <tr *ngIf="(convidados | filterAdmGuests:searchQuery:filterStatus).length === 0">
+                        <td colspan="5" class="px-4 py-8 text-center text-sm" style="color: #7a6259;">Nenhum convidado
+                            encontrado.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div *ngIf="showModal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-lg overflow-hidden"
+            style="border: 1px solid rgba(139,94,82,0.2);">
+            <div class="px-6 py-4 border-b" style="background: #fdf8f4; border-color: rgba(139,94,82,0.1);">
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #2c1f14;">
+                    {{ isEditing ? 'Editar Convidado' : 'Novo Convidado' }}
+                </h3>
+            </div>
+
+            <form [formGroup]="guestForm" (ngSubmit)="saveGuest()" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm mb-1" style="color: #7a6259;">Nome Principal *</label>
+                    <input type="text" formControlName="nome"
+                        class="w-full px-3 py-2 rounded border text-sm outline-none"
+                        style="border-color: rgba(139,94,82,0.25); background: #fdf8f4; color: #2c1f14;">
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-sm mb-1" style="color: #7a6259;">Telefone ou E-mail *</label>
+                        <div class="flex">
+                            <div class="flex shrink-0 rounded-l overflow-hidden border-y border-l"
+                                style="border-color: rgba(139,94,82,0.25);">
+                                <button type="button" (click)="setGuestContactType('tel')"
+                                    class="px-4 py-2 text-sm font-medium transition-colors border-r flex items-center gap-1.5 whitespace-nowrap"
+                                    [ngStyle]="{'background': guestContactType === 'tel' ? '#8b5e52' : '#fdf8f4', 'color': guestContactType === 'tel' ? '#fff' : '#8b5e52', 'border-color': 'rgba(139,94,82,0.25)'}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                                        </path>
+                                    </svg>
+                                    Tel
+                                </button>
+                                <button type="button" (click)="setGuestContactType('email')"
+                                    class="px-4 py-2 text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap"
+                                    [ngStyle]="{'background': guestContactType === 'email' ? '#8b5e52' : '#fdf8f4', 'color': guestContactType === 'email' ? '#fff' : '#8b5e52'}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                        </path>
+                                        <polyline points="22,6 12,13 2,6"></polyline>
+                                    </svg>
+                                    Email
+                                </button>
+                            </div>
+                            <input [type]="guestContactType === 'email' ? 'email' : 'text'" formControlName="contato"
+                                [placeholder]="guestContactType === 'email' ? 'exemplo@email.com' : '(11) 99999-9999'"
+                                class="w-full px-3 py-2 rounded-r border text-sm outline-none"
+                                style="border-color: rgba(139,94,82,0.25); background: #fdf8f4; color: #2c1f14;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-sm mb-1" style="color: #7a6259;">Limite de Acompanhantes</label>
+                        <input type="number" min="0" formControlName="limiteAcompanhantes"
+                            class="w-full px-3 py-2 rounded border text-sm outline-none"
+                            style="border-color: rgba(139,94,82,0.25); background: #fdf8f4; color: #2c1f14;">
+                        <span *ngIf="guestForm.get('limiteAcompanhantes')?.hasError('min')"
+                            class="text-xs text-red-500 mt-1">Não pode ser negativo.</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t mt-6" style="border-color: rgba(139,94,82,0.1);">
+                    <button type="button" (click)="closeModal()"
+                        class="px-4 py-2 rounded text-sm transition-colors hover:bg-stone-100"
+                        style="color: #8b5e52; border: 1px solid #8b5e52;">Cancelar</button>
+                    <button type="submit" [disabled]="guestForm.invalid"
+                        class="px-4 py-2 rounded text-sm text-white transition-opacity disabled:opacity-50 hover:opacity-90"
+                        style="background: #8b5e52;">
+                        {{ isEditing ? 'Salvar Alterações' : 'Cadastrar' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Companion Modal -->
+    <div *ngIf="showCompanionModal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-lg overflow-hidden"
+            style="border: 1px solid rgba(139,94,82,0.2);">
+            <div class="px-6 py-4 border-b" style="background: #fdf8f4; border-color: rgba(139,94,82,0.1);">
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #2c1f14;">
+                    {{ isEditingCompanion ? 'Editar Acompanhante' : 'Novo Acompanhante' }}
+                </h3>
+            </div>
+
+            <form [formGroup]="companionForm" (ngSubmit)="saveCompanion()" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm mb-1" style="color: #7a6259;">Nome do Acompanhante *</label>
+                    <input type="text" formControlName="nome"
+                        class="w-full px-3 py-2 rounded border text-sm outline-none"
+                        style="border-color: rgba(139,94,82,0.25); background: #fdf8f4; color: #2c1f14;">
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-sm mb-1" style="color: #7a6259;">Telefone ou E-mail *</label>
+                        <div class="flex">
+                            <div class="flex shrink-0 rounded-l overflow-hidden border-y border-l"
+                                style="border-color: rgba(139,94,82,0.25);">
+                                <button type="button" (click)="setCompanionContactType('tel')"
+                                    class="px-4 py-2 text-sm font-medium transition-colors border-r flex items-center gap-1.5 whitespace-nowrap"
+                                    [ngStyle]="{'background': companionContactType === 'tel' ? '#8b5e52' : '#fdf8f4', 'color': companionContactType === 'tel' ? '#fff' : '#8b5e52', 'border-color': 'rgba(139,94,82,0.25)'}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                                        </path>
+                                    </svg>
+                                    Tel
+                                </button>
+                                <button type="button" (click)="setCompanionContactType('email')"
+                                    class="px-4 py-2 text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap"
+                                    [ngStyle]="{'background': companionContactType === 'email' ? '#8b5e52' : '#fdf8f4', 'color': companionContactType === 'email' ? '#fff' : '#8b5e52'}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                        </path>
+                                        <polyline points="22,6 12,13 2,6"></polyline>
+                                    </svg>
+                                    Email
+                                </button>
+                            </div>
+                            <input [type]="companionContactType === 'email' ? 'email' : 'text'"
+                                formControlName="contato"
+                                [placeholder]="companionContactType === 'email' ? 'exemplo@email.com' : '(11) 99999-9999'"
+                                class="w-full px-3 py-2 rounded-r border text-sm outline-none"
+                                style="border-color: rgba(139,94,82,0.25); background: #fdf8f4; color: #2c1f14;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t mt-6" style="border-color: rgba(139,94,82,0.1);">
+                    <button type="button" (click)="closeCompanionModal()"
+                        class="px-4 py-2 rounded text-sm transition-colors hover:bg-stone-100"
+                        style="color: #8b5e52; border: 1px solid #8b5e52;">Cancelar</button>
+                    <button type="submit" [disabled]="companionForm.invalid"
+                        class="px-4 py-2 rounded text-sm text-white transition-opacity disabled:opacity-50 hover:opacity-90"
+                        style="background: #8b5e52;">
+                        {{ isEditingCompanion ? 'Salvar' : 'Adicionar' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

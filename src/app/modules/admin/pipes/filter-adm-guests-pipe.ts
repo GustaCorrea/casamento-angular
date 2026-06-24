@@ -19,8 +19,8 @@ export class FilterAdmGuestsPipe implements PipeTransform {
       const searchLower = search.toLowerCase();
       filtered = filtered.filter(c =>
         c.nome.toLowerCase().includes(searchLower) ||
-        c.telefone.includes(search) ||
-        c.email.toLowerCase().includes(searchLower)
+        (c.telefone && c.telefone.includes(search)) ||
+        (c.email && c.email.toLowerCase().includes(searchLower))
       );
     }
 
