@@ -215,64 +215,87 @@
             <th class="px-6 py-4 font-medium text-center">Ações</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100 text-gray-700">
-          <tr *ngFor="let gift of filteredGifts" class="hover:bg-gray-50 transition-colors">
-            <td class="px-6 py-4 font-medium text-brand-dark">{{ gift.name }}</td>
+        <tbody>
+          <tr
+            *ngFor="let gift of gifts"
+            class="border-b border-gray-100 hover:bg-white/50 transition-colors"
+          >
+            <td class="py-4 px-6 text-sm text-gray-700">
+              <span *ngIf="editingId !== gift.id">{{ gift.name }}</span>
 
-            <td class="px-6 py-4">
+              <input
+                *ngIf="editingId === gift.id"
+                type="text"
+                [(ngModel)]="editedGift.name"
+                class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-full text-sm outline-none focus:border-[#a88b6d]"
+              />
+            </td>
+
+            <td class="py-4 px-6 text-sm">
               <span
-                class="px-3 py-1 rounded-full text-xs"
-                [ngClass]="{
-                  'bg-[#fdf2f0] text-[#c98e83]': gift.category === 'Viagem',
-                  'bg-[#f5efe9] text-[#a48a73]': gift.category === 'Experiência',
-                  'bg-blue-50 text-blue-600': gift.category === 'Casa',
-                  'bg-gray-100 text-gray-600': gift.category === 'Eletrodoméstico',
-                }"
+                *ngIf="editingId !== gift.id"
+                class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs"
               >
                 {{ gift.category }}
               </span>
+
+              <select
+                *ngIf="editingId === gift.id"
+                [(ngModel)]="editedGift.category"
+                class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-full text-sm outline-none focus:border-[#a88b6d]"
+              >
+                <option value="Viagem">Viagem</option>
+                <option value="Experiência">Experiência</option>
+                <option value="Casa">Casa</option>
+                <option value="Eletrodoméstico">Eletrodoméstico</option>
+              </select>
             </td>
 
-            <td class="px-6 py-4">{{ gift.totalValue | currency: 'BRL' : 'symbol' : '1.2-2' }}</td>
-            <td class="px-6 py-4">{{ gift.collected | currency: 'BRL' : 'symbol' : '1.2-2' }}</td>
+            <td class="py-4 px-6 text-sm text-gray-600">
+              <span *ngIf="editingId !== gift.id">R$ {{ gift.totalValue | number: '1.2-2' }}</span>
 
-            <td class="px-6 py-4 w-32">
-              <div class="flex items-center gap-3">
-                <div class="w-full bg-gray-200 rounded-full h-1.5">
-                  <div
-                    class="bg-[#8c6b5d] h-1.5 rounded-full"
-                    [style.width.%]="calculatePercentage(gift.collected, gift.totalValue)"
-                  ></div>
-                </div>
-                <span class="text-xs text-gray-500"
-                  >{{ calculatePercentage(gift.collected, gift.totalValue) }}%</span
-                >
+              <input
+                *ngIf="editingId === gift.id"
+                type="number"
+                [(ngModel)]="editedGift.totalValue"
+                class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-24 text-sm outline-none focus:border-[#a88b6d]"
+              />
+            </td>
+
+            <td class="py-4 px-6 text-sm text-gray-600">
+              R$ {{ gift.collected | number: '1.2-2' }}
+            </td>
+
+            <td class="py-4 px-6 text-sm flex items-center gap-2 mt-2">
+              <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  class="h-full bg-[#a88b6d]"
+                  [style.width.%]="(gift.collected / gift.totalValue) * 100"
+                ></div>
               </div>
-            </td>
-
-            <td class="px-6 py-4">
-              <span
-                *ngIf="gift.status === 'ATIVO'"
-                class="text-orange-500 bg-orange-50 px-2 py-1 rounded text-xs"
-                >Ativo</span
-              >
-              <span
-                *ngIf="gift.status === 'COMPLETO'"
-                class="text-green-600 bg-green-50 px-2 py-1 rounded text-xs"
-                >Completo</span
-              >
-              <span
-                *ngIf="gift.status === 'INDISPONIVEL'"
-                class="text-red-600 bg-red-50 px-2 py-1 rounded text-xs"
-                >Indisponível</span
+              <span class="text-xs text-gray-500"
+                >{{ (gift.collected / gift.totalValue) * 100 | number: '1.0-0' }}%</span
               >
             </td>
 
-            <td class="px-6 py-4">
-              <div class="flex items-center justify-center gap-2">
+            <td class="py-4 px-6 text-sm">
+              <span
+                class="px-2 py-1 text-xs font-medium rounded"
+                [ngClass]="{
+                  'text-orange-600 bg-orange-50': gift.status === 'ATIVO',
+                  'text-green-600 bg-green-50': gift.status === 'COMPLETO',
+                  'text-gray-500 bg-gray-100': gift.status === 'INDISPONIVEL',
+                }"
+              >
+                {{ gift.status | titlecase }}
+              </span>
+            </td>
+
+            <td class="py-4 px-6 text-sm">
+              <div *ngIf="editingId !== gift.id" class="flex gap-2">
                 <button
-                  (click)="openEditModal(gift)"
-                  class="p-1.5 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition"
+                  (click)="startEditing(gift)"
+                  class="flex items-center justify-center w-8 h-8 bg-[#f5ebe0] text-[#8b5a2b] hover:bg-[#e6d5c3] rounded transition-colors cursor-pointer"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -280,12 +303,12 @@
                       stroke-linejoin="round"
                       stroke-width="2"
                       d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                    ></path>
+                    />
                   </svg>
                 </button>
+
                 <button
-                  (click)="deleteGift(gift.id)"
-                  class="p-1.5 bg-red-50 text-red-500 rounded hover:bg-red-100 transition"
+                  class="flex items-center justify-center w-8 h-8 bg-[#ffe4e1] text-[#cd5c5c] hover:bg-[#ffcccb] rounded transition-colors cursor-pointer"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -293,6 +316,43 @@
                       stroke-linejoin="round"
                       stroke-width="2"
                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div *ngIf="editingId === gift.id" class="flex gap-2">
+                <button
+                  (click)="saveEdit()"
+                  [disabled]="editedGift.totalValue! < gift.collected"
+                  class="flex items-center justify-center w-8 h-8 rounded transition-colors"
+                  [ngClass]="
+                    editedGift.totalValue! < gift.collected
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'text-green-600 bg-green-100 border border-green-200 hover:bg-green-200 cursor-pointer'
+                  "
+                  title="A meta não pode ser menor que o valor já arrecadado"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                </button>
+
+                <button
+                  (click)="cancelEdit()"
+                  class="flex items-center justify-center w-6 h-6 text-red-500 bg-red-50 border border-red-200 hover:bg-red-100 rounded cursor-pointer"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
                     ></path>
                   </svg>
                 </button>

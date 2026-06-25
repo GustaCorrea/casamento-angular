@@ -7,13 +7,14 @@ import { Presente } from '../../services/presente';
   selector: 'app-presentes-page',
   standalone: false,
   templateUrl: './presentes-page.html',
-  styleUrl: './presentes-page.css',
 })
 export class PresentesPage implements OnInit {
 
   gifts: Gift[] = [];
   filteredGifts: Gift[] = [];
   activeCategory: string = 'Todos';
+  editingId: number | null = null;
+  editedGift: any = {};
 
   constructor(private presenteService: Presente) {}
 
@@ -128,4 +129,26 @@ export class PresentesPage implements OnInit {
       error: (err) => console.error('Erro ao salvar o presente:', err)
     });
   }
+
+ startEditing(gift: any) {
+  this.editingId = gift.id;
+  this.editedGift = { ...gift };
+ }
+
+ cancelEdit() {
+    this.editingId = null;
+    this.editedGift = {};
+  }
+
+ saveEdit() {
+  // Lógica futura da API aqui...
+  
+  // Atualizando a lista local
+  const index = this.gifts.findIndex(g => g.id === this.editingId);
+  if (index !== -1) {
+    this.gifts[index] = { ...this.editedGift };
+  }
+  
+  this.editingId = null;
+}
 }
