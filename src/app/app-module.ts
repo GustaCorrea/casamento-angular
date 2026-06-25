@@ -8,10 +8,10 @@ import { CoreModule } from './core/core-module';
 import { AuthModule } from './modules/auth/auth-module';
 import { InviteModule } from './modules/invite/invite-module';
 import { MarketplaceModule } from './modules/marketplace/marketplace-module';
-import { InvitePage } from './shared/pages/invite-page/invite-page';
+import { InvitePage } from './modules/invite/pages/invite-page/invite-page';
 
 @NgModule({
-  declarations: [App], // 👈 Removido o InvitePage daqui
+  declarations: [App],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -20,7 +20,7 @@ import { InvitePage } from './shared/pages/invite-page/invite-page';
     AuthModule,
     InviteModule,
     MarketplaceModule,
-    InvitePage, // 🌟 Adicionado o InvitePage AQUI nos imports!
+    InvitePage,
   ],
   providers: [provideBrowserGlobalErrorListeners()],
   bootstrap: [App],

@@ -5,7 +5,7 @@ import { HomePage } from './shared/pages/home-page/home-page';
 import { AuthLayout } from './core/layouts/auth-layout/auth-layout';
 import { LoginPage } from './modules/auth/pages/login-page/login-page';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
-import { InvitePage } from './shared/pages/invite-page/invite-page';
+import { InvitePage } from './modules/invite/pages/invite-page/invite-page';
 
 const routes: Routes = [
   {
