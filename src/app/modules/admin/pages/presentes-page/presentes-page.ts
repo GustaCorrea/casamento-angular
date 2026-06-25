@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Gift } from '../../../../core/models/gift';
-import { Presente } from '../../../../core/services/presente';
+import { Presente } from '../../services/presente';
+
 
 @Component({
   selector: 'app-presentes-page',

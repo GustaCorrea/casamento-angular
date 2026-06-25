@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Gift } from '../models/gift';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { Gift } from '../../../core/models/gift';
 
 @Injectable({
   providedIn: 'root',
