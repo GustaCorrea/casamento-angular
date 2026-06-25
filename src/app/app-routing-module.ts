@@ -6,6 +6,7 @@ import { AuthLayout } from './core/layouts/auth-layout/auth-layout';
 import { LoginPage } from './modules/auth/pages/login-page/login-page';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
 import { InvitePage } from './modules/invite/pages/invite-page/invite-page';
+import { InviteLayout } from './core/layouts/invite-layout/invite-layout';
 
 const routes: Routes = [
   {
@@ -16,9 +17,11 @@ const routes: Routes = [
   },
   {
     // Layout de Convites
-    path: 'invite',
-    component: MainLayout,
-    children: [{ path: '', component: InvitePage }],
+    path: '',
+    component: InviteLayout,
+    children: [
+      { path: 'invite', component: InvitePage }
+    ],
   },
   {
     // Layout da Autenticação
