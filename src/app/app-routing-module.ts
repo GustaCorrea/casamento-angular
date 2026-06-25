@@ -6,7 +6,7 @@ import { AuthLayout } from './core/layouts/auth-layout/auth-layout';
 import { LoginPage } from './modules/auth/pages/login-page/login-page';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
 import { PrizePage } from './modules/marketplace/pages/prize-page/prize-page';
-import { PresentesPage } from './modules/admin/pages/presentes-page/presentes-page';
+import { authGuard } from './core/guards/auth-guard';
 
 const routes: Routes = [
   {
@@ -29,11 +29,9 @@ const routes: Routes = [
     // Layout do Painel Administrador
   {
     path: "system",
-    component: AdminLayout, 
-    children: [
-      { path: "presentes", component: PresentesPage },
-      { path: "", redirectTo: "presentes", pathMatch: "full" }
-    ]
+    component: AdminLayout,
+    canActivate: [authGuard],
+    children: []
   }
 ];
 
