@@ -26,8 +26,8 @@ const routes: Routes = [
       { path: "login", component: LoginPage }
     ]
   },
-  {
     // Layout do Painel Administrador
+  {
     path: "system",
     component: AdminLayout,
     canActivate: [authGuard],
