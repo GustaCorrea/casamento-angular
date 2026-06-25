@@ -5,8 +5,6 @@ import { HomePage } from './shared/pages/home-page/home-page';
 import { AuthLayout } from './core/layouts/auth-layout/auth-layout';
 import { LoginPage } from './modules/auth/pages/login-page/login-page';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
-import { authGuard } from './core/guards/auth-guard';
-
 import { AdmGuestsComponent } from './modules/admin/pages/adm-guests-page/admin-guests-page';
 
 const routes: Routes = [
@@ -31,7 +29,7 @@ const routes: Routes = [
     path: "system",
     component: AdminLayout,
     children: [
-      { path: "guests", component: AdmGuestsComponent }
+      { path: "convidados", component: AdmGuestsComponent }
     ]
   }
 ];
