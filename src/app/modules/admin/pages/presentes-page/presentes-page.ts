@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Gift } from '../../../../core/models/gift';
+import { Presente } from '../../../../core/services/presente';
 
 @Component({
   selector: 'app-presentes-page',
@@ -8,32 +9,26 @@ import { Gift } from '../../../../core/models/gift';
   styleUrl: './presentes-page.css',
 })
 export class PresentesPage implements OnInit {
-gifts: Gift[] = [
-    {
-      id: 1,
-      name: 'Lua de Mel em Cancún',
-      description: 'Cotas para a nossa viagem inesquecível',
-      totalValue: 8000,
-      collected: 5200,
-      category: 'Viagem',
-      status: 'ATIVO'
-    },
-    {
-      id: 2,
-      name: 'Jantar Romântico em Paris',
-      description: 'Um jantar especial na torre',
-      totalValue: 3000,
-      collected: 3000,
-      category: 'Experiência',
-      status: 'COMPLETO'
-    }
-  ];
 
+  gifts: Gift[] = [];
   filteredGifts: Gift[] = [];
   activeCategory: string = 'Todos';
 
+  constructor(private presenteService: Presente) {}
+
   ngOnInit(): void {
-    this.filteredGifts = [...this.gifts];
+    this.loadGifts();
+  }
+
+  // Busca os dados através do Service usando Subscribe
+  loadGifts() {
+    this.presenteService.getGifts().subscribe({
+      next: (data) => {
+        this.gifts = data;
+        this.filterByCategory(this.activeCategory); 
+      },
+      error: (err) => console.error('Erro ao buscar presentes', err)
+    });
   }
 
   calculatePercentage(collected: number, total: number): number {
@@ -81,4 +76,55 @@ gifts: Gift[] = [
     }
   }
 
+
+  isFormOpen: boolean = false;
+  
+  // Objeto temporário que vai receber os dados do HTML
+  newGift: Partial<Gift> = {
+    name: '',
+    description: '',
+    totalValue: 0,
+    imageUrl: '',
+    category: 'Casa'
+  };
+
+  toggleForm() {
+    this.isFormOpen = !this.isFormOpen;
+  }
+
+ saveGift() {
+    // Validação inicial
+    if (!this.newGift.name || this.newGift.totalValue! <= 0) {
+      alert('Por favor, preencha o nome e insira uma meta maior que zero.');
+      return;
+    }
+
+    // Monta o objeto
+    const giftToSave: Gift = {
+      name: this.newGift.name!,
+      description: this.newGift.description || '',
+      totalValue: this.newGift.totalValue!,
+      imageUrl: this.newGift.imageUrl || '',
+      category: this.newGift.category!,
+      collected: 0, 
+      status: 'ATIVO' 
+    };
+
+    // Salva através do Service
+    this.presenteService.createGift(giftToSave).subscribe({
+      next: (savedGift) => {
+        this.loadGifts(); 
+        this.isFormOpen = false; 
+        
+        this.newGift = { 
+          name: '', 
+          description: '', 
+          totalValue: 0, 
+          imageUrl: '', 
+          category: 'Casa' 
+        };
+      },
+      error: (err) => console.error('Erro ao salvar o presente:', err)
+    });
+  }
 }

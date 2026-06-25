@@ -5,22 +5,115 @@
   </div>
 
   <div
-    class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex items-center justify-between mb-8"
+    class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-8 transition-all duration-300"
   >
-    <h3 class="text-lg font-medium text-brand-dark">Cadastrar Presente</h3>
-    <button
-      class="bg-[#8c6b5d] hover:bg-[#735548] text-white px-5 py-2 rounded-md transition-colors flex items-center gap-2 shadow-sm font-medium text-sm"
-    >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M12 4v16m8-8H4"
-        ></path>
-      </svg>
-      Novo
-    </button>
+    <div class="flex items-center justify-between" [ngClass]="{ 'mb-6': isFormOpen }">
+      <h3 class="text-lg font-medium text-brand-dark">Cadastrar Presente</h3>
+
+      <button
+        (click)="toggleForm()"
+        [ngClass]="
+          isFormOpen
+            ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            : 'bg-[#8c6b5d] hover:bg-[#735548] text-white'
+        "
+        class="px-5 py-2 rounded-md transition-colors flex items-center gap-2 shadow-sm font-medium text-sm"
+      >
+        <svg
+          *ngIf="!isFormOpen"
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          ></path>
+        </svg>
+        <svg
+          *ngIf="isFormOpen"
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+
+        {{ isFormOpen ? 'Cancelar' : 'Novo' }}
+      </button>
+    </div>
+
+    <div *ngIf="isFormOpen" class="space-y-4">
+      <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
+        <input
+          type="text"
+          [(ngModel)]="newGift.name"
+          placeholder="Nome do presente"
+          class="w-full md:flex-1 px-4 py-2.5 bg-[#fdfbf9] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm text-brand-dark placeholder-gray-400"
+        />
+
+        <select
+          [(ngModel)]="newGift.category"
+          class="w-full md:w-48 px-4 py-2.5 bg-[#fdfbf9] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm text-brand-dark"
+        >
+          <option value="Casa">Casa</option>
+          <option value="Viagem">Viagem</option>
+          <option value="Experiência">Experiência</option>
+          <option value="Eletrodoméstico">Eletrodoméstico</option>
+        </select>
+
+        <div class="relative w-full md:w-40">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="text-gray-500 text-sm font-medium">R$</span>
+          </div>
+          <input
+            type="number"
+            [(ngModel)]="newGift.totalValue"
+            placeholder="Valor da Meta"
+            class="w-full pl-9 pr-4 py-2.5 bg-[#fdfbf9] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm text-brand-dark placeholder-gray-400"
+          />
+        </div>
+
+        <button
+          (click)="saveGift()"
+          class="w-full md:w-auto px-4 py-2.5 bg-[#8c6b5d] hover:bg-[#735548] text-white rounded-md shadow-sm transition-colors flex justify-center items-center"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-4 items-start md:items-center pt-2">
+        <input
+          type="text"
+          [(ngModel)]="newGift.description"
+          placeholder="Descrição curta do presente"
+          class="w-full md:flex-1 px-4 py-2 bg-[#fdfbf9] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm text-brand-dark placeholder-gray-400"
+        />
+
+        <input
+          type="text"
+          [(ngModel)]="newGift.imageUrl"
+          placeholder="URL da imagem (opcional por enquanto)"
+          class="w-full md:flex-1 px-4 py-2 bg-[#fdfbf9] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm text-brand-dark placeholder-gray-400"
+        />
+      </div>
+    </div>
   </div>
 
   <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
@@ -38,31 +131,68 @@
       <input
         type="text"
         placeholder="Buscar presente..."
+        (input)="searchGift($event)"
         class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md bg-[#f9f8f6] focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm"
       />
     </div>
 
     <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-      <button class="px-4 py-1.5 bg-[#8c6b5d] text-white text-sm rounded-md shadow-sm">
+      <button
+        (click)="filterByCategory('Todos')"
+        [ngClass]="
+          activeCategory === 'Todos'
+            ? 'bg-[#8c6b5d] text-white border-transparent'
+            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+        "
+        class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
+      >
         Todos
       </button>
+
       <button
-        class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 text-sm rounded-md hover:bg-gray-50 transition"
+        (click)="filterByCategory('Casa')"
+        [ngClass]="
+          activeCategory === 'Casa'
+            ? 'bg-[#8c6b5d] text-white border-transparent'
+            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+        "
+        class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
       >
         Casa
       </button>
+
       <button
-        class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 text-sm rounded-md hover:bg-gray-50 transition"
+        (click)="filterByCategory('Viagem')"
+        [ngClass]="
+          activeCategory === 'Viagem'
+            ? 'bg-[#8c6b5d] text-white border-transparent'
+            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+        "
+        class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
       >
         Viagem
       </button>
+
       <button
-        class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 text-sm rounded-md hover:bg-gray-50 transition"
+        (click)="filterByCategory('Experiência')"
+        [ngClass]="
+          activeCategory === 'Experiência'
+            ? 'bg-[#8c6b5d] text-white border-transparent'
+            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+        "
+        class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
       >
         Experiência
       </button>
+
       <button
-        class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 text-sm rounded-md hover:bg-gray-50 transition"
+        (click)="filterByCategory('Eletrodoméstico')"
+        [ngClass]="
+          activeCategory === 'Eletrodoméstico'
+            ? 'bg-[#8c6b5d] text-white border-transparent'
+            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+        "
+        class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
       >
         Eletrodoméstico
       </button>
