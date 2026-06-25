@@ -30,4 +30,4 @@ import { AdminModule } from './modules/admin/admin-module';
   ],
   bootstrap: [App],
 })
-export class AppModule { }
+export class AppModule {}
