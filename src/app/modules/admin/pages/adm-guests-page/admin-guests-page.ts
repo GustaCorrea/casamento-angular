@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
-import Swal from 'sweetalert2';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdmGuestsService, Convidado } from '../../services/admin-guests-service';
-import { FilterAdmGuestsPipe } from '../../pipes/filter-adm-guests-pipe';
 
 @Component({
   selector: 'app-adm-guests',
@@ -120,17 +117,15 @@ export class AdmGuestsComponent implements OnInit {
 
     if (this.isEditing && this.editingId) {
       this.convidados = this.convidados.map(c => c.id === this.editingId ? { ...c, ...guestData } : c);
-      Swal.fire('Atualizado!', 'O convidado foi atualizado com sucesso.', 'success');
     } else {
-      const newGuest: Convidado = { 
-        ...guestData, 
+      const newGuest: Convidado = {
+        ...guestData,
         id: Date.now(),
         status: 'Aguardando',
         restricoes: '',
         acompanhantes: []
       };
       this.convidados = [...this.convidados, newGuest];
-      Swal.fire('Cadastrado!', 'O convidado foi adicionado à lista.', 'success');
     }
 
     this.closeModal();
@@ -144,7 +139,7 @@ export class AdmGuestsComponent implements OnInit {
       const comp = guest.acompanhantes![compIndex];
       const contactType = comp.email ? 'email' : 'tel';
       this.setCompanionContactType(contactType, false);
-      this.companionForm.patchValue({ 
+      this.companionForm.patchValue({
         nome: comp.nome,
         contato: comp.email || comp.telefone || ''
       });
@@ -166,10 +161,10 @@ export class AdmGuestsComponent implements OnInit {
 
   saveCompanion() {
     if (this.companionForm.invalid || !this.activeGuestForCompanion) return;
-    
+
     const formVal = this.companionForm.value;
     const companionData: any = { nome: formVal.nome };
-    
+
     if (this.companionContactType === 'email') {
        companionData.email = formVal.contato;
        companionData.telefone = '';
@@ -179,57 +174,33 @@ export class AdmGuestsComponent implements OnInit {
     }
 
     const guest = this.activeGuestForCompanion;
-    
+
     if (!guest.acompanhantes) guest.acompanhantes = [];
-    
+
     if (this.isEditingCompanion && this.editingCompanionIndex !== null) {
       guest.acompanhantes[this.editingCompanionIndex] = { ...guest.acompanhantes[this.editingCompanionIndex], ...companionData };
-      Swal.fire('Atualizado!', 'O acompanhante foi atualizado com sucesso.', 'success');
     } else {
       if (guest.acompanhantes.length >= guest.limiteAcompanhantes) {
-        Swal.fire('Atenção', 'Limite de acompanhantes atingido para este convidado.', 'warning');
+        alert('Atenção: Limite de acompanhantes atingido para este convidado.');
         return;
       }
       guest.acompanhantes.push(companionData);
-      Swal.fire('Sucesso!', 'Acompanhante adicionado com sucesso.', 'success');
     }
     this.closeCompanionModal();
   }
 
   deleteCompanion(guest: Convidado, compIndex: number) {
-    Swal.fire({
-      title: 'Tem certeza?',
-      text: 'O acompanhante será excluído.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#c0392b',
-      cancelButtonColor: '#8b5e52',
-      confirmButtonText: 'Sim, excluir!',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        guest.acompanhantes!.splice(compIndex, 1);
-        Swal.fire('Excluído!', 'O acompanhante foi removido.', 'success');
-      }
-    });
+    const aceitouExcluir = confirm('Tem certeza? O acompanhante será excluído.');
+    if (aceitouExcluir && guest.acompanhantes) {
+      guest.acompanhantes.splice(compIndex, 1);
+    }
   }
 
   deleteGuest(id: number) {
-    Swal.fire({
-      title: 'Tem certeza?',
-      text: 'Isso também excluirá os acompanhantes vinculados a ele.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#c0392b',
-      cancelButtonColor: '#8b5e52',
-      confirmButtonText: 'Sim, excluir!',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.convidados = this.convidados.filter(c => c.id !== id);
-        Swal.fire('Excluído!', 'O convidado foi removido.', 'success');
-      }
-    });
+    const aceitouExcluir = confirm('Tem certeza? Isso também excluirá os acompanhantes vinculados a ele.');
+    if (aceitouExcluir) {
+      this.convidados = this.convidados.filter(c => c.id !== id);
+    }
   }
 
   get totalConvidados() { return this.convidados.length; }
