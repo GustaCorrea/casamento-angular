@@ -1,4 +1,62 @@
-<p>header-component works!</p>
-<button-component>Button Example</button-component>
-<p routerLink="" >Home</p>
-<p routerLink="auth/login" >Login</p>
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/20 shadow-sm transition-all duration-300"
+    style="background-color: #f3e8e2; font-family: 'Lato', sans-serif;">
+
+    <div class="relative z-50 max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between"
+        style="background-color: #f3e8e2;">
+
+        <a routerLink="/" (click)="closeMenu()"
+            class="flex items-center gap-2 transition-opacity hover:opacity-80 cursor-pointer"
+            style="text-decoration: none;">
+            <span class="text-[1.2rem] md:text-[1.7rem]"
+                style="font-family: 'Playfair Display', serif; font-weight: 600; color: #2c1f14;">
+                Maria Laura & Pedro
+            </span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8">
+            <a routerLink="/" routerLinkActive #rlaHome="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
+                class="transition-colors hover:opacity-80 cursor-pointer text-[1.2rem]"
+                [style.color]="rlaHome.isActive ? '#8b5e52' : '#7a6259'"
+                style="letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;">
+                Início
+            </a>
+
+            <a routerLink="/presentes" routerLinkActive #rlaGifts="routerLinkActive"
+                class="transition-colors hover:opacity-80 cursor-pointer text-[1.2rem]"
+                [style.color]="rlaGifts.isActive ? '#8b5e52' : '#7a6259'"
+                style="letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;">
+                Presentes
+            </a>
+        </div>
+
+        <button (click)="toggleMenu()"
+            class="md:hidden flex flex-col justify-center items-center w-8 h-8 focus:outline-none aria-label='Menu'">
+            <span class="bg-[#2c1f14] block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"
+                [ngClass]="isMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'"></span>
+            <span class="bg-[#2c1f14] block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5"
+                [ngClass]="isMenuOpen ? 'opacity-0' : 'opacity-100'"></span>
+            <span class="bg-[#2c1f14] block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"
+                [ngClass]="isMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'"></span>
+        </button>
+    </div>
+
+    <div class="md:hidden absolute top-full left-0 right-0 shadow-lg border-b border-black/5 transition-all duration-300 ease-in-out z-40"
+        style="background-color: #fdf8f4;"
+        [ngClass]="isMenuOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'">
+        <div class="flex flex-col items-center py-6 gap-6">
+            <a routerLink="/" routerLinkActive #rlaHomeMob="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
+                (click)="closeMenu()" class="transition-colors hover:opacity-80 cursor-pointer text-[1.1rem]"
+                [style.color]="rlaHomeMob.isActive ? '#8b5e52' : '#7a6259'"
+                style="letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;">
+                Início
+            </a>
+
+            <a routerLink="/presentes" routerLinkActive #rlaGiftsMob="routerLinkActive" (click)="closeMenu()"
+                class="transition-colors hover:opacity-80 cursor-pointer text-[1.1rem]"
+                [style.color]="rlaGiftsMob.isActive ? '#8b5e52' : '#7a6259'"
+                style="letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;">
+                Presentes
+            </a>
+        </div>
+    </div>
+</nav>

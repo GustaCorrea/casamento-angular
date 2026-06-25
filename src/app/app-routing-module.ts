@@ -7,6 +7,9 @@ import { LoginPage } from './modules/auth/pages/login-page/login-page';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
 import { InvitePage } from './modules/invite/pages/invite-page/invite-page';
 import { InviteLayout } from './core/layouts/invite-layout/invite-layout';
+import { AdmGuestsComponent } from './modules/admin/pages/adm-guests-page/admin-guests-page';
+import { PrizePage } from './modules/marketplace/pages/prize-page/prize-page';
+import { authGuard } from './core/guards/auth-guard';
 
 const routes: Routes = [
   {
@@ -29,12 +32,15 @@ const routes: Routes = [
     component: AuthLayout,
     children: [{ path: 'login', component: LoginPage }],
   },
-  {
     // Layout do Painel Administrador
-    path: 'system',
+  {
+    path: "system",
     component: AdminLayout,
-    children: [],
-  },
+    canActivate: [authGuard],
+    children: [
+      { path: "convidados", component: AdmGuestsComponent }
+    ]
+  }
 ];
 
 @NgModule({

@@ -1,2 +1,80 @@
-<p>login-page works!</p>
-<p routerLink="" >Voltar</p>
+<div class="min-h-screen flex items-center justify-center px-6"
+    style="background: linear-gradient(135deg, #fdf8f4 0%, #f3e8e2 100%); font-family: 'Lato', sans-serif;">
+    <div class="w-full max-w-sm">
+        <!-- Logo -->
+        <div class="text-center mb-8 sm:mb-10">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm"
+                style="background: #8b5e52;">
+                <svg class="w-6 h-6 sm:w-8 sm:h-8 text-white opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl mb-1" style="font-family: 'Playfair Display', serif; color: #2c1f14; font-weight: 500;">
+                Maria Laura & Pedro Guilherme
+            </h1>
+            <p class="text-xs sm:text-sm" style="color: #7a6259; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;">Painel do Administrador</p>
+        </div>
+
+        <!-- Card -->
+        <div class="rounded-2xl p-6 sm:p-8 shadow-lg" style="background: #fffaf6; border: 1px solid rgba(139,94,82,0.12);">
+            <h2 class="mb-6 text-center sm:text-left"
+                style="font-family: 'Playfair Display', serif; font-size: 1.25rem; color: #2c1f14; font-weight: 600;">
+                Acesso restrito
+            </h2>
+
+            <!-- Formulário Reativo -->
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
+
+                <!-- Usuário -->
+                <div>
+                    <label class="block text-sm mb-1.5 font-medium" style="color: #7a6259;">Usuário</label>
+                    <div class="relative">
+                        <input type="text" formControlName="username" placeholder="Digite seu usuário" (input)="clearError()"
+                            class="w-full px-4 py-3 rounded-lg border text-sm outline-none transition-all focus:ring-2 focus:ring-[#8b5e52] focus:border-transparent"
+                            style="border-color: rgba(139,94,82,0.25); background: #fdf8f4; color: #2c1f14;" />
+                    </div>
+                </div>
+
+                <!-- Senha -->
+                <div>
+                    <label class="block text-sm mb-1.5 font-medium" style="color: #7a6259;">Senha</label>
+                    <div class="relative">
+                        <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                            placeholder="••••••••" (input)="clearError()"
+                            class="w-full pl-4 pr-12 py-3 rounded-lg border text-sm outline-none transition-all focus:ring-2 focus:ring-[#8b5e52] focus:border-transparent"
+                            style="border-color: rgba(139,94,82,0.25); background: #fdf8f4; color: #2c1f14;" />
+                        <button type="button" (click)="togglePassword()"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:opacity-70 focus:outline-none transition-opacity"
+                            style="color: #8b5e52;">
+                            <svg *ngIf="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            <svg *ngIf="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.978 9.978 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mensagem de Erro Dinâmica -->
+                <div *ngIf="errorMessage" class="text-sm rounded-lg px-4 py-3 animate-fade-in border"
+                    style="background: #fde8e8; color: #c0392b; border-color: rgba(192,57,43,0.2);">
+                    {{ errorMessage }}
+                </div>
+
+                <!-- Botão Entrar com estado Disabled e Spinner -->
+                <button type="submit" [disabled]="loginForm.invalid || isLoading"
+                    class="w-full py-3.5 rounded-lg text-sm font-semibold transition-all mt-4 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-opacity-90 shadow-md hover:shadow-lg active:scale-[0.98]"
+                    style="background: #8b5e52; color: white;">
+                    <span *ngIf="!isLoading">Entrar no painel</span>
+
+                    <!-- Loading Spinner -->
+                    <svg *ngIf="isLoading" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -12,4 +12,4 @@ import { InviteLayout } from './layouts/invite-layout/invite-layout';
   imports: [CommonModule, RouterModule, SharedModule],
   exports: [MainLayout, AuthLayout, AdminLayout, InviteLayout],
 })
-export class CoreModule {}
+export class CoreModule { }
