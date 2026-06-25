@@ -1,21 +1,23 @@
-<div class="bg-white rounded-lg shadow-sm overflow-hidden">
-  <img src="{{ gift.imageUrl }}" alt="{{ gift.title }}" class="w-full h-48 object-cover" />
-  <div class="p-4">
-    <h3 class="font-semibold text-lg text-[#2c1f14]">{{ gift.title }}</h3>
-    <p class="text-sm text-[#7a6259] mt-2">{{ gift.description }}</p>
+<div class="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col" style="height:380px;">
+  <img src="{{ gift.imageUrl }}" alt="{{ gift.title }}" class="w-full object-cover" style="height:180px; flex-shrink:0;"/>
+  <div class="p-4 flex flex-col flex-1">
+    <h3 class="font-semibold text-lg" style="color:#2c1f14;">{{ gift.title }}</h3>
+    <p class="text-sm mt-2" style="color:#7a6259;">{{ gift.description }}</p>
 
-    <div class="mt-4">
+    <div class="mt-auto">
       <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-        <div class="h-2 bg-[#8b5e52]" [style.width]="getPercentage(gift) + '%'"></div>
+        <div class="h-2 rounded-full" style="background:#8b5e52;" [style.width]="getPercentage(gift) + '%'"></div>
       </div>
-      <div class="flex justify-between items-center mt-2 text-sm text-[#7a6259]">
+      <div class="flex justify-between items-center mt-2 text-sm" style="color:#7a6259;">
         <span>R$ {{ gift.currentAmount }}</span>
         <span>R$ {{ gift.targetAmount }}</span>
       </div>
+      <div class="mt-4 text-center">
+        <button (click)="contribute()" class="px-4 py-2 text-white rounded-md transition-colors" style="background:#8b5e52;">
+          Contribuir
+        </button>
+      </div>
     </div>
 
-    <div class="mt-4 text-center">
-      <button class="px-4 py-2 bg-[#8b5e52] text-white rounded-md">Contribuir</button>
-    </div>
   </div>
 </div>
