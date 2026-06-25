@@ -12,7 +12,7 @@ export class Modal {
 
   predefinedValues = [50, 100, 200, 500];
   selectedValue: number = 50;
-  
+
   customValue: string = '';
   donorName: string = '';
   message: string = '';
