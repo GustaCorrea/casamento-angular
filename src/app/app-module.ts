@@ -8,7 +8,6 @@ import { CoreModule } from './core/core-module';
 import { AuthModule } from './modules/auth/auth-module';
 import { InviteModule } from './modules/invite/invite-module';
 import { MarketplaceModule } from './modules/marketplace/marketplace-module';
-import { InvitePage } from './modules/invite/pages/invite-page/invite-page';
 
 @NgModule({
   declarations: [App],
@@ -20,7 +19,6 @@ import { InvitePage } from './modules/invite/pages/invite-page/invite-page';
     AuthModule,
     InviteModule,
     MarketplaceModule,
-    InvitePage,
   ],
   providers: [provideBrowserGlobalErrorListeners()],
   bootstrap: [App],
