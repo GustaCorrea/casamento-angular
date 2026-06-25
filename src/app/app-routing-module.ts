@@ -16,7 +16,10 @@ const routes: Routes = [
     // Layout público
     path: '',
     component: MainLayout,
-    children: [{ path: '', component: HomePage }],
+    children: [
+      { path: '', component: HomePage },
+      { path: 'presentes', component: PrizePage },
+    ],
   },
   {
     // Layout de Convites
