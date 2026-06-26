@@ -41,6 +41,7 @@ const routes: Routes = [
   {
     path: "system",
     component: AdminLayout,
+    canActivate: [authGuard],
     children: [
       { path: "convidados", component: GuestPage },
       { path: "presentes", component: GiftPage },
