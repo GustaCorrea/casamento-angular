@@ -8,7 +8,7 @@ import { environment } from '../../../enviroments/enviroment';
 })
 export class ApiService {
   // Agora a URL base é lida dinamicamente a partir do environment gerado pelo .env
-  private readonly baseUrl = environment.apiUrl;
+  private readonly baseUrl = "https://bemcasados-app-v3.onrender.com";
 
   constructor(private http: HttpClient) {}
 
