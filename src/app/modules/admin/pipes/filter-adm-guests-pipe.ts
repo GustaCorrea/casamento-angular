@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Convidado } from '../services/admin-guests-service';
+import { Guest } from '../../../shared/constants/Guest';
 
 @Pipe({
-  name: 'filterAdmGuests',
+  name: 'filterGuests',
   standalone: false
 })
-export class FilterAdmGuestsPipe implements PipeTransform {
-  transform(convidados: Convidado[], search: string, status: string): Convidado[] {
+export class FilterGuestPipe implements PipeTransform {
+  transform(convidados: Guest[], search: string, status: string): Guest[] {
     if (!convidados) return [];
 
     let filtered = convidados;

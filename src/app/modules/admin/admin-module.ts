@@ -2,14 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AdmGuestsComponent } from './pages/admin-guests-page/admin-guests-page';
-import { FilterAdmGuestsPipe } from './pipes/filter-adm-guests-pipe';
-import { PresentesPage } from './pages/presentes-page/presentes-page';
+import { FilterGuestPipe } from './pipes/filter-adm-guests-pipe';
 import { SchedulePage } from './pages/schedule-page/schedule-page';
+import { GiftPage } from './pages/gift-page/gift-page';
+import { GuestPage } from './pages/guest-page/guest-page';
 
 @NgModule({
-  declarations: [AdmGuestsComponent, FilterAdmGuestsPipe, PresentesPage, SchedulePage],
+  declarations: [FilterGuestPipe, SchedulePage, GiftPage, GuestPage],
   imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule],
-  exports: [AdmGuestsComponent],
+  exports: [],
 })
 export class AdminModule {}

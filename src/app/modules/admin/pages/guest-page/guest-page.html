@@ -107,7 +107,7 @@
         </thead>
         <tbody>
           <ng-container
-            *ngFor="let guest of convidados | filterAdmGuests: searchQuery : filterStatus"
+            *ngFor="let guest of convidados | filterGuests: searchQuery : filterStatus"
           >
             <tr
               class="border-t hover:bg-stone-50 transition-colors"
