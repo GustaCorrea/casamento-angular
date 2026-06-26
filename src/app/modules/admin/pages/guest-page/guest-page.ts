@@ -4,7 +4,7 @@ import { Guest } from '../../../../shared/constants/Guest';
 import { GuestService } from '../../services/guest/guest-service';
 
 @Component({
-  selector: 'app-guest-page',
+  selector: 'admin-guest-page',
   standalone: false,
   templateUrl: './guest-page.html'
 })

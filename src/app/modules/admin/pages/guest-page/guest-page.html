@@ -233,7 +233,7 @@
               </td>
             </tr>
           </ng-container>
-          <tr *ngIf="(convidados | filterAdmGuests: searchQuery : filterStatus).length === 0">
+          <tr *ngIf="(convidados | filterGuests: searchQuery : filterStatus).length === 0">
             <td colspan="5" class="px-4 py-8 text-center text-sm" style="color: #7a6259">
               Nenhum convidado encontrado.
             </td>

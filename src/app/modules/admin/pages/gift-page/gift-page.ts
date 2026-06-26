@@ -3,7 +3,7 @@ import { GiftService } from '../../services/gift/gift-service'; // ajuste o cami
 import { Gift } from '../../../../shared/constants/Gift';
 
 @Component({
-  selector: 'app-gift-page',
+  selector: 'admin-gift-page',
   standalone: false,
   templateUrl: './gift-page.html',
 })

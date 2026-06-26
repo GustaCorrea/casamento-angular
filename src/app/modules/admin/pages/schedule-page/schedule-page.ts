@@ -3,7 +3,7 @@ import { ScheduleService } from '../../services/schedule/schedule-service';
 import { Schedule } from '../../../../shared/constants/Schedule';
 
 @Component({
-  selector: 'app-schedule-page',
+  selector: 'admin-schedule-page',
   standalone: false,
   templateUrl: './schedule-page.html'
 })
