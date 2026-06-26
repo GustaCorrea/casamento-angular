@@ -8,19 +8,19 @@ import { Observable } from 'rxjs';
 })
 export class ScheduleService {
   constructor(private api: ApiService) {}
-  getConvidados(): Observable<Schedule[]> {
+  getSchedules(): Observable<Schedule[]> {
     return this.api.get<Schedule[]>('/schedule');
   }
 
-  addConvidado(convidado: Schedule): Observable<Schedule> {
+  addSchedule(convidado: Schedule): Observable<Schedule> {
     return this.api.post<Schedule>('/schedule', convidado);
   }
 
-  updateConvidado(id: number, convidado: Schedule): Observable<Schedule> {
+  updateSchedule(id: number, convidado: Schedule): Observable<Schedule> {
     return this.api.put<Schedule>(`/schedule/${id}`, convidado);
   }
 
-  deleteConvidado(id: number): Observable<void> {
+  deleteSchedule(id: number): Observable<void> {
     return this.api.delete<void>(`/schedule/${id}`);
   }
 }

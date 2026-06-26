@@ -32,7 +32,7 @@ export class SchedulePage implements OnInit {
 
   // GET: Carrega todos os eventos do backend
   loadEvents() {
-    this.scheduleService.getConvidados().subscribe({
+    this.scheduleService.getSchedules().subscribe({
       next: (data) => {
         this.events = data;
         this.sortEvents();
@@ -86,7 +86,7 @@ export class SchedulePage implements OnInit {
     }
     this.newEvent.dateTime = fullDateTime;
 
-    this.scheduleService.addConvidado(this.newEvent as Schedule).subscribe({
+    this.scheduleService.addSchedule(this.newEvent as Schedule).subscribe({
       next: (savedEvent) => {
         this.events.push(savedEvent);
         this.sortEvents();
@@ -134,7 +134,7 @@ export class SchedulePage implements OnInit {
 
     this.editedEvent.dateTime = fullDateTime;
 
-    this.scheduleService.updateConvidado(this.editingId, this.editedEvent as Schedule).subscribe({
+    this.scheduleService.updateSchedule(this.editingId, this.editedEvent as Schedule).subscribe({
       next: (updatedEvent) => {
         const index = this.events.findIndex(e => e.id === this.editingId);
         if (index !== -1) {
@@ -157,7 +157,7 @@ export class SchedulePage implements OnInit {
     const confirmDelete = window.confirm(`Tem certeza que deseja excluir o evento "${event.title}"?`);
 
     if (confirmDelete && event.id) {
-      this.scheduleService.deleteConvidado(event.id).subscribe({
+      this.scheduleService.deleteSchedule(event.id).subscribe({
         next: () => {
           this.events = this.events.filter(e => e.id !== event.id);
         },
