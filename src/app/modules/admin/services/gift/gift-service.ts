@@ -9,18 +9,18 @@ import { Gift } from '../../../../shared/constants/Gift';
 export class GiftService {
   constructor(private api: ApiService) {}
     getGifts(): Observable<Gift[]> {
-      return this.api.get<Gift[]>('/gift');
+      return this.api.get<Gift[]>('gifts');
     }
 
     addGift(convidado: Gift): Observable<Gift> {
-      return this.api.post<Gift>('/gift', convidado);
+      return this.api.post<Gift>('gifts', convidado);
     }
 
     updateGift(id: number, convidado: Gift): Observable<Gift> {
-      return this.api.put<Gift>(`/gift/${id}`, convidado);
+      return this.api.put<Gift>(`gifts/${id}`, convidado);
     }
 
     deleteGift(id: number): Observable<void> {
-      return this.api.delete<void>(`/gift/${id}`);
+      return this.api.delete<void>(`gifts/${id}`);
     }
 }

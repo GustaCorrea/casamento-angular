@@ -14,6 +14,7 @@ export class SidebarComponent {
 
   logout() {
     // Aqui no futuro limpar o token do usuário (ex: localStorage.clear())
-    this.router.navigate(['/auth/login']); 
+    localStorage.clear();
+    this.router.navigate(['/auth/login']);
   }
 }
