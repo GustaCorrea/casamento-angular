@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ScheduleEvent } from '../../../../core/models/schedule-event';
-import { ScheduleService } from '../../services/schedule';
+import { ScheduleService } from '../../services/schedule/schedule-service';
+import { Schedule } from '../../../../shared/constants/Schedule';
 
 @Component({
   selector: 'app-schedule-page',
@@ -9,28 +9,42 @@ import { ScheduleService } from '../../services/schedule';
 })
 export class SchedulePage implements OnInit {
 
-  events: ScheduleEvent[] = [];
+  events: Schedule[] = [];
   searchTerm: string = '';
   selectedType: string = 'Todos';
-  
+
   // Controle do Formulário Inline
   isFormOpen: boolean = false;
-  newEvent: Partial<ScheduleEvent> = {};
-  
+  newEvent: Partial<Schedule> = {};
+
   weddingDate: string = '2026-10-10';
   timeInput: string = '';
+
+  editingId: number | undefined = undefined;
+  editedEvent: Partial<Schedule> = {};
+  editTimeInput: string = '';
 
   constructor(private scheduleService: ScheduleService) {}
 
   ngOnInit() {
-    this.events = this.scheduleService.getEvents();
-    this.sortEvents(); 
+    this.loadEvents();
+  }
+
+  // GET: Carrega todos os eventos do backend
+  loadEvents() {
+    this.scheduleService.getConvidados().subscribe({
+      next: (data) => {
+        this.events = data;
+        this.sortEvents();
+      },
+      error: (err) => console.error('Erro ao carregar eventos:', err)
+    });
   }
 
   get filteredEvents() {
     return this.events.filter(event => {
-      const matchSearch = event.title.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
-                          event.locationName.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchSearch = (event.title?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
+                          (event.locationName?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false);
       const matchType = this.selectedType === 'Todos' || event.type === this.selectedType;
       return matchSearch && matchType;
     });
@@ -47,7 +61,7 @@ export class SchedulePage implements OnInit {
   toggleForm() {
     this.isFormOpen = !this.isFormOpen;
     if (this.isFormOpen) {
-      this.newEvent = { type: 'CERIMONIA' }; 
+      this.newEvent = { type: 'CERIMONIA' };
       this.timeInput = '';
     } else {
       this.newEvent = {};
@@ -55,6 +69,7 @@ export class SchedulePage implements OnInit {
     }
   }
 
+  // POST: Cria um novo evento
   saveEvent() {
     if (!this.timeInput) {
       alert("Por favor, preencha o horário do evento.");
@@ -64,32 +79,35 @@ export class SchedulePage implements OnInit {
     const fullDateTime = `${this.weddingDate}T${this.timeInput}:00`;
     const eventDate = new Date(fullDateTime);
     const now = new Date();
-    
+
     if (eventDate < now) {
       alert("Ops! O horário e data deste evento já passaram.");
       return;
     }
     this.newEvent.dateTime = fullDateTime;
 
-    this.newEvent.id = Math.floor(Math.random() * 1000);
-    this.events.push(this.newEvent as ScheduleEvent);
-    
-    this.sortEvents(); 
-    this.isFormOpen = false; 
+    this.scheduleService.addConvidado(this.newEvent as Schedule).subscribe({
+      next: (savedEvent) => {
+        this.events.push(savedEvent);
+        this.sortEvents();
+        this.isFormOpen = false;
+        this.newEvent = {};
+        this.timeInput = '';
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Erro ao salvar o evento.');
+      }
+    });
   }
 
-  // CONTROLE DE EDIÇÃO 
-
-  editingId: number | undefined = undefined;
-  editedEvent: Partial<ScheduleEvent> = {};
-  editTimeInput: string = '';
-
-  startEditing(event: ScheduleEvent) {
+  startEditing(event: Schedule) {
     this.editingId = event.id;
     this.editedEvent = { ...event };
-    
-    // Pega a string '2026-10-10T14:30:00' e corta para ficar só '14:30' no input
-    this.editTimeInput = event.dateTime.split('T')[1].substring(0, 5);
+
+    if (event.dateTime) {
+      this.editTimeInput = event.dateTime.split('T')[1].substring(0, 5);
+    }
   }
 
   cancelEdit() {
@@ -98,8 +116,9 @@ export class SchedulePage implements OnInit {
     this.editTimeInput = '';
   }
 
+  // PUT: Atualiza um evento existente
   saveEdit() {
-    if (!this.editTimeInput) {
+    if (!this.editTimeInput || !this.editingId) {
       alert("Por favor, preencha o horário do evento.");
       return;
     }
@@ -107,31 +126,46 @@ export class SchedulePage implements OnInit {
     const fullDateTime = `${this.weddingDate}T${this.editTimeInput}:00`;
     const eventDate = new Date(fullDateTime);
     const now = new Date();
-    
+
     if (eventDate < now) {
       alert("Ops! O horário e data deste evento já passaram.");
       return;
     }
-    
+
     this.editedEvent.dateTime = fullDateTime;
 
-    const index = this.events.findIndex(e => e.id === this.editingId);
-    if (index !== -1) {
-      this.events[index] = { ...this.editedEvent } as ScheduleEvent;
-    }
-
-    this.sortEvents();
-    this.editingId = undefined;
+    this.scheduleService.updateConvidado(this.editingId, this.editedEvent as Schedule).subscribe({
+      next: (updatedEvent) => {
+        const index = this.events.findIndex(e => e.id === this.editingId);
+        if (index !== -1) {
+          this.events[index] = updatedEvent;
+        }
+        this.sortEvents();
+        this.editingId = undefined;
+        this.editedEvent = {};
+        this.editTimeInput = '';
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Erro ao atualizar o evento.');
+      }
+    });
   }
 
-  // CONTROLE DE EXCLUSÃO 
-  deleteEvent(event: ScheduleEvent) {
-    // Confirmação antes de deletar
+  // DELETE: Remove o evento
+  deleteEvent(event: Schedule) {
     const confirmDelete = window.confirm(`Tem certeza que deseja excluir o evento "${event.title}"?`);
-    
-    if (confirmDelete) {
-      // Futuramente  this.scheduleService.deleteEvent(event.id)...
-      this.events = this.events.filter(e => e.id !== event.id);
+
+    if (confirmDelete && event.id) {
+      this.scheduleService.deleteConvidado(event.id).subscribe({
+        next: () => {
+          this.events = this.events.filter(e => e.id !== event.id);
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Erro ao deletar o evento.');
+        }
+      });
     }
   }
 }
