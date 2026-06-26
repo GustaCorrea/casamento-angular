@@ -44,7 +44,7 @@ export class LoginPage {
       next: () => {
         this.isLoading = false;
         // Redireciona para o painel após o login
-        this.router.navigate(['/system']);
+        this.router.navigate(['/system/presentes']);
       },
       error: (err) => {
         this.isLoading = false;

@@ -7,9 +7,11 @@ import { LoginPage } from './modules/auth/pages/login-page/login-page';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
 import { InvitePage } from './modules/invite/pages/invite-page/invite-page';
 import { InviteLayout } from './core/layouts/invite-layout/invite-layout';
-import { AdmGuestsComponent } from './modules/admin/pages/adm-guests-page/admin-guests-page';
 import { PrizePage } from './modules/marketplace/pages/prize-page/prize-page';
 import { authGuard } from './core/guards/auth-guard';
+import { SchedulePage } from './modules/admin/pages/schedule-page/schedule-page';
+import { GiftPage } from './modules/admin/pages/gift-page/gift-page';
+import { GuestPage } from './modules/admin/pages/guest-page/guest-page';
 
 const routes: Routes = [
   {
@@ -41,7 +43,9 @@ const routes: Routes = [
     component: AdminLayout,
     canActivate: [authGuard],
     children: [
-      { path: "convidados", component: AdmGuestsComponent }
+      { path: "convidados", component: GuestPage },
+      { path: "presentes", component: GiftPage },
+      { path: "cronograma", component: SchedulePage }
     ]
   }
 ];

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { GiftItem } from '../../constants/GiftItem';
+import { Gift } from '../../../../shared/constants/Gift';
 
 @Component({
   selector: 'marketplace-card-component',
@@ -7,12 +7,12 @@ import { GiftItem } from '../../constants/GiftItem';
   templateUrl: './card-component.html'
 })
 export class CardComponent {
-  @Input() gift!: GiftItem;
+  @Input() gift!: Gift;
 
   // Recebe a função do pai. Ela aceita um GiftItem e retorna um número.
-  @Input() getPercentage!: (gift: GiftItem) => number;
+  @Input() getPercentage!: (gift: Gift) => number;
 
-  @Output() onContribute = new EventEmitter<GiftItem>();
+  @Output() onContribute = new EventEmitter<Gift>();
 
   contribute(): void {
     this.onContribute.emit(this.gift);

@@ -1,42 +1,65 @@
-import { Component } from '@angular/core';
-import { GiftItem } from '../../constants/GiftItem';
+
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Gift } from '../../../../shared/constants/Gift';
+import { ApiService } from '../../../../core/services/api-service'; // Garanta que o caminho está correto
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-prize-page',
   standalone: false,
   templateUrl: './prize-page.html',
 })
-export class PrizePage {
-  categories: string[] = ["Todos", "Viagem", "Experiência", "Casa", "Eletrodoméstico"];
-  filter: string = "Todos";
-  selectedGift: GiftItem | null = null;
+export class PrizePage implements OnInit {
+  categories: string[] = ['Todos', 'Viagem', 'Experiência', 'Casa', 'Eletrodoméstico'];
+  filter: string = 'Todos';
+  selectedGift: Gift | null = null;
 
-  gifts: GiftItem[] = [
-    { id: 1, title: "Lua de Mel em Cancún", description: "Contribua para a viagem dos noivos para o paraíso caribenho", imageUrl: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=400&fit=crop&auto=format", targetAmount: 8000, currentAmount: 5200, category: "Viagem" },
-    { id: 2, title: "Jantar Romântico em Paris", description: "Experiência gastronômica inesquecível para o casal", imageUrl: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&h=400&fit=crop&auto=format", targetAmount: 3000, currentAmount: 3000, category: "Experiência" },
-    { id: 3, title: "Jogo de Panelas Tramontina", description: "Conjunto completo para a nova casa do casal", imageUrl: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop&auto=format", targetAmount: 1200, currentAmount: 900, category: "Casa" },
-    { id: 4, title: "Sofá para a Sala", description: "Sofá retrátil 3 lugares para o novo lar", imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=400&fit=crop&auto=format", targetAmount: 4500, currentAmount: 1500, category: "Casa" },
-    { id: 5, title: "Smart TV 65\"", description: "Televisão para os filmes de domingo do casal", imageUrl: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&h=400&fit=crop&auto=format", targetAmount: 3500, currentAmount: 2100, category: "Eletrodoméstico" },
-    { id: 6, title: "Churrasqueira a Gás", description: "Para os encontros com família e amigos", imageUrl: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=400&fit=crop&auto=format", targetAmount: 2200, currentAmount: 800, category: "Casa" },
-  ];
+  // Lista onde vamos salvar os presentes vindos do Banco de Dados
+  allGifts: Gift[] = [];
 
-  get filteredGifts(): GiftItem[] {
-    return this.filter === "Todos" ? this.gifts : this.gifts.filter((g: GiftItem) => g.category === this.filter);
+  // 1. Injeta o ApiService e o ChangeDetectorRef para garantir a renderização
+  constructor(private api: ApiService, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+    // 2. Dispara a busca quando a página carrega
+    this.loadGifts();
+  }
+
+  loadGifts(): void {
+    this.api.get<Gift[]>('gifts').subscribe({ // Ajuste a rota para a sua rota de presentes (ex: 'gifts' ou 'prizes')
+      next: (dadosDoBackend: Gift[]) => {
+        this.allGifts = dadosDoBackend;
+        this.cdr.detectChanges(); // Garante que a tela vai atualizar com os novos dados
+      },
+      error: (err) => {
+        console.error('Erro ao buscar presentes do backend:', err);
+      }
+    });
+  }
+
+  // 3. Atualizado para usar o 'allGifts' do banco e tratar letras maiúsculas
+  get filteredGifts(): Gift[] {
+    if (this.filter === 'Todos') {
+      return this.allGifts;
+    }
+    // O backend retorna "CASA" ou "VIAGEM". O .toUpperCase() faz o filtro bater perfeitamente
+    return this.allGifts.filter((g: Gift) => g.type.toUpperCase() === this.filter.toUpperCase());
   }
 
   setFilter(cat: string): void {
     this.filter = cat;
   }
 
-  getPercentage(gift: GiftItem): number {
-    return Math.min(100, Math.round((gift.currentAmount / gift.targetAmount) * 100));
+  getPercentage(gift: Gift): number {
+    if (!gift.value) return 0;
+    return Math.min(100, Math.round((gift.collected / gift.value) * 100));
   }
 
-  isComplete(gift: GiftItem): boolean {
+  isComplete(gift: Gift): boolean {
     return this.getPercentage(gift) >= 100;
   }
 
-  openModal(gift: GiftItem): void {
+  openModal(gift: Gift): void {
     if (!this.isComplete(gift)) {
       this.selectedGift = gift;
     }

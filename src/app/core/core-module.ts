@@ -8,7 +8,12 @@ import { AdminLayout } from './layouts/admin-layout/admin-layout';
 import { InviteLayout } from './layouts/invite-layout/invite-layout';
 
 @NgModule({
-  declarations: [MainLayout, AuthLayout, AdminLayout, InviteLayout],
+  declarations: [
+    MainLayout, 
+    AuthLayout, 
+    AdminLayout, 
+    InviteLayout,
+  ],
   imports: [CommonModule, RouterModule, SharedModule],
   exports: [MainLayout, AuthLayout, AdminLayout, InviteLayout],
 })
