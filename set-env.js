@@ -1,8 +1,15 @@
 const fs = require('fs');
-require('dotenv').config(); // Instale com: npm install dotenv --save-dev
+require('dotenv').config();
 
-const targetPath = './src/environments/environment.prod.ts';
-const targetDevPath = './src/environments/environment.ts';
+const dirPath = './src/environments';
+const targetPath = `${dirPath}/environment.prod.ts`;
+const targetDevPath = `${dirPath}/environment.ts`;
+
+// --- CORREÇÃO: Garante que a árvore de pastas 'src/environments' exista antes de criar os arquivos ---
+if (!fs.existsSync(dirPath)) {
+  fs.mkdirSync(dirPath, { recursive: true });
+  console.log(`Pasta criada com sucesso em: ${dirPath}`);
+}
 
 const envConfigFile = `export const environment = {
   production: true,
@@ -16,7 +23,8 @@ const envConfigDevFile = `export const environment = {
 };
 `;
 
-// Garante que a pasta existe e escreve os arquivos
+// Escreve os arquivos com segurança
 fs.writeFileSync(targetPath, envConfigFile);
 fs.writeFileSync(targetDevPath, envConfigDevFile);
+
 console.log(`Ambiente Angular gerado com sucesso através do .env no host.`);
