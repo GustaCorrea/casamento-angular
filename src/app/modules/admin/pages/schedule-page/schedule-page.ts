@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ScheduleService } from '../../services/schedule/schedule-service';
 import { Schedule } from '../../../../shared/constants/Schedule';
 
@@ -24,7 +24,7 @@ export class SchedulePage implements OnInit {
   editedEvent: Partial<Schedule> = {};
   editTimeInput: string = '';
 
-  constructor(private scheduleService: ScheduleService) {}
+  constructor(private scheduleService: ScheduleService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadEvents();
@@ -36,6 +36,7 @@ export class SchedulePage implements OnInit {
       next: (data) => {
         this.events = data;
         this.sortEvents();
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Erro ao carregar eventos:', err)
     });
@@ -44,7 +45,7 @@ export class SchedulePage implements OnInit {
   get filteredEvents() {
     return this.events.filter(event => {
       const matchSearch = (event.title?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
-                          (event.locationName?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false);
+                          (event.location?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false);
       const matchType = this.selectedType === 'Todos' || event.type === this.selectedType;
       return matchSearch && matchType;
     });
@@ -55,7 +56,7 @@ export class SchedulePage implements OnInit {
   }
 
   sortEvents() {
-    this.events.sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
+    this.events.sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
   }
 
   toggleForm() {
@@ -84,7 +85,7 @@ export class SchedulePage implements OnInit {
       alert("Ops! O horário e data deste evento já passaram.");
       return;
     }
-    this.newEvent.dateTime = fullDateTime;
+    this.newEvent.eventDate = fullDateTime;
 
     this.scheduleService.addSchedule(this.newEvent as Schedule).subscribe({
       next: (savedEvent) => {
@@ -93,6 +94,7 @@ export class SchedulePage implements OnInit {
         this.isFormOpen = false;
         this.newEvent = {};
         this.timeInput = '';
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
@@ -105,8 +107,8 @@ export class SchedulePage implements OnInit {
     this.editingId = event.id;
     this.editedEvent = { ...event };
 
-    if (event.dateTime) {
-      this.editTimeInput = event.dateTime.split('T')[1].substring(0, 5);
+    if (event.eventDate) {
+      this.editTimeInput = event.eventDate.split('T')[1].substring(0, 5);
     }
   }
 
@@ -132,7 +134,7 @@ export class SchedulePage implements OnInit {
       return;
     }
 
-    this.editedEvent.dateTime = fullDateTime;
+    this.editedEvent.eventDate = fullDateTime;
 
     this.scheduleService.updateSchedule(this.editingId, this.editedEvent as Schedule).subscribe({
       next: (updatedEvent) => {
@@ -144,6 +146,7 @@ export class SchedulePage implements OnInit {
         this.editingId = undefined;
         this.editedEvent = {};
         this.editTimeInput = '';
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
@@ -160,6 +163,7 @@ export class SchedulePage implements OnInit {
       this.scheduleService.deleteSchedule(event.id).subscribe({
         next: () => {
           this.events = this.events.filter(e => e.id !== event.id);
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error(err);

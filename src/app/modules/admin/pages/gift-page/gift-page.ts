@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { GiftService } from '../../services/gift/gift-service'; // ajuste o caminho se necessário
 import { Gift } from '../../../../shared/constants/Gift';
 
@@ -8,7 +8,6 @@ import { Gift } from '../../../../shared/constants/Gift';
   templateUrl: './gift-page.html',
 })
 export class GiftPage implements OnInit {
-
   allGifts: Gift[] = [];
   gifts: Gift[] = []; // Lista exibida na tabela (filtrada/buscada)
 
@@ -23,7 +22,7 @@ export class GiftPage implements OnInit {
   editingId: number | undefined = undefined;
   editedGift: Partial<Gift> = {};
 
-  constructor(private giftService: GiftService) {}
+  constructor(private giftService: GiftService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadGifts();
@@ -35,17 +34,27 @@ export class GiftPage implements OnInit {
       next: (data) => {
         this.allGifts = data;
         this.applyFilterAndSearch();
+        this.cdr.detectChanges();
       },
-      error: (err) => console.error('Erro ao buscar presentes:', err)
+      error: (err) => console.error('Erro ao buscar presentes:', err),
     });
   }
 
   // Filtros combinados de Categoria e Termo de Busca
   applyFilterAndSearch(): void {
-    this.gifts = this.allGifts.filter(gift => {
-      const matchCategory = this.activeCategory === 'Todos' || gift.category === this.activeCategory;
-      const matchSearch = gift.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                          gift.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+    this.gifts = this.allGifts.filter((gift) => {
+      // Compara transformando ambos para UPPERCASE para ignorar se veio 'CASA' ou 'Casa'
+      const matchCategory =
+        this.activeCategory === 'Todos' ||
+        gift.type?.toUpperCase() === this.activeCategory.toUpperCase();
+
+      const giftName = gift.name?.toLowerCase() || '';
+      const giftDesc = gift.description?.toLowerCase() || '';
+
+      const matchSearch =
+        giftName.includes(this.searchTerm.toLowerCase()) ||
+        giftDesc.includes(this.searchTerm.toLowerCase());
+
       return matchCategory && matchSearch;
     });
   }
@@ -64,7 +73,7 @@ export class GiftPage implements OnInit {
   toggleForm(): void {
     this.isFormOpen = !this.isFormOpen;
     if (this.isFormOpen) {
-      this.newGift = { category: 'Casa' }; // Valor inicial padrão do <select>
+      this.newGift = { type: 'Casa' }; // Mantém 'Casa' idêntico ao <option value="Casa">
     } else {
       this.newGift = {};
     }
@@ -72,7 +81,7 @@ export class GiftPage implements OnInit {
 
   // POST: Cadastra um novo presente
   saveGift(): void {
-    if (!this.newGift.name || !this.newGift.totalValue) {
+    if (!this.newGift.name || !this.newGift.value) {
       alert('Por favor, preencha o nome e o valor da meta.');
       return;
     }
@@ -80,12 +89,12 @@ export class GiftPage implements OnInit {
     // Inicializadores padrão para um novo presente enviado à API
     const giftPayload: Gift = {
       name: this.newGift.name,
-      category: this.newGift.category || 'Casa',
-      totalValue: Number(this.newGift.totalValue),
+      type: this.newGift.type || 'Casa',
+      value: Number(this.newGift.value),
       description: this.newGift.description || '',
       imageUrl: this.newGift.imageUrl || '',
       collected: 0,
-      status: 'ATIVO'
+      status: 'ATIVO',
     };
 
     this.giftService.addGift(giftPayload).subscribe({
@@ -94,11 +103,12 @@ export class GiftPage implements OnInit {
         this.applyFilterAndSearch();
         this.isFormOpen = false;
         this.newGift = {};
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
         alert('Erro ao cadastrar o presente.');
-      }
+      },
     });
   }
 
@@ -114,42 +124,46 @@ export class GiftPage implements OnInit {
 
   // PUT: Atualiza as edições na linha correspondente
   saveEdit(): void {
-    if (!this.editingId || !this.editedGift.name || !this.editedGift.totalValue) {
+    if (!this.editingId || !this.editedGift.name || !this.editedGift.value) {
       alert('Por favor, preencha os campos obrigatórios.');
       return;
     }
 
     this.giftService.updateGift(this.editingId, this.editedGift as Gift).subscribe({
       next: (updatedGift) => {
-        const index = this.allGifts.findIndex(g => g.id === this.editingId);
+        const index = this.allGifts.findIndex((g) => g.id === this.editingId);
         if (index !== -1) {
           this.allGifts[index] = updatedGift;
         }
         this.applyFilterAndSearch();
         this.editingId = undefined;
         this.editedGift = {};
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
         alert('Erro ao atualizar o presente.');
-      }
+      },
     });
   }
 
   // DELETE: Remove o item
   deleteEvent(gift: Gift): void {
-    const confirmDelete = window.confirm(`Tem certeza que deseja excluir o presente "${gift.name}"?`);
+    const confirmDelete = window.confirm(
+      `Tem certeza que deseja excluir o presente "${gift.name}"?`,
+    );
 
     if (confirmDelete && gift.id) {
       this.giftService.deleteGift(gift.id).subscribe({
         next: () => {
-          this.allGifts = this.allGifts.filter(g => g.id !== gift.id);
+          this.allGifts = this.allGifts.filter((g) => g.id !== gift.id);
           this.applyFilterAndSearch();
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error(err);
           alert('Erro ao deletar o presente.');
-        }
+        },
       });
     }
   }

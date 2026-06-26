@@ -84,7 +84,7 @@
         />
         <input
           type="text"
-          [(ngModel)]="newEvent.locationName"
+          [(ngModel)]="newEvent.location"
           placeholder="Local do evento"
           class="w-full md:flex-1 px-4 py-2.5 bg-[#fdfbf9] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm text-brand-dark placeholder-gray-400"
         />
@@ -222,7 +222,7 @@
             class="border-b border-gray-100 hover:bg-white/50 transition-colors"
           >
             <td class="py-4 px-6 text-sm text-[#8c6b5d] font-medium">
-              <span *ngIf="editingId !== event.id">{{ event.dateTime | date: 'HH:mm' }}</span>
+              <span *ngIf="editingId !== event.id">{{ event.eventDate | date: 'HH:mm' }}</span>
               <div *ngIf="editingId === event.id" class="relative w-24">
                 <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
                   <svg
@@ -258,11 +258,11 @@
             </td>
 
             <td class="py-4 px-6 text-sm text-gray-600">
-              <span *ngIf="editingId !== event.id">{{ event.locationName }}</span>
+              <span *ngIf="editingId !== event.id">{{ event.location }}</span>
               <input
                 *ngIf="editingId === event.id"
                 type="text"
-                [(ngModel)]="editedEvent.locationName"
+                [(ngModel)]="editedEvent.location"
                 class="w-full border border-[#e5dcd3] bg-[#fdfbf9] rounded-md px-3 py-1.5 text-sm outline-none focus:border-[#8c6b5d]"
               />
             </td>

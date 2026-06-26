@@ -4,7 +4,8 @@ export interface Schedule {
   id?: number;
   title: string;
   description: string;
-  dateTime: string;
-  locationName: string;
+  eventDate: string;
+  location: string;
+  time: string;
   type: EventType;
 }

@@ -62,7 +62,7 @@
         />
 
         <select
-          [(ngModel)]="newGift.category"
+          [(ngModel)]="newGift.type"
           class="w-full md:w-48 px-4 py-2.5 bg-[#fdfbf9] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm text-brand-dark"
         >
           <option value="Casa">Casa</option>
@@ -77,7 +77,7 @@
           </div>
           <input
             type="number"
-            [(ngModel)]="newGift.totalValue"
+            [(ngModel)]="newGift.value"
             placeholder="Valor da Meta"
             class="w-full pl-9 pr-4 py-2.5 bg-[#fdfbf9] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm text-brand-dark placeholder-gray-400"
           />
@@ -236,12 +236,12 @@
                 *ngIf="editingId !== gift.id"
                 class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs"
               >
-                {{ gift.category }}
+                {{ gift.type }}
               </span>
 
               <select
                 *ngIf="editingId === gift.id"
-                [(ngModel)]="editedGift.category"
+                [(ngModel)]="editedGift.type"
                 class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-full text-sm outline-none focus:border-[#a88b6d]"
               >
                 <option value="Viagem">Viagem</option>
@@ -252,12 +252,12 @@
             </td>
 
             <td class="py-4 px-6 text-sm text-gray-600">
-              <span *ngIf="editingId !== gift.id">R$ {{ gift.totalValue | number: '1.2-2' }}</span>
+              <span *ngIf="editingId !== gift.id">R$ {{ gift.value | number: '1.2-2' }}</span>
 
               <input
                 *ngIf="editingId === gift.id"
                 type="number"
-                [(ngModel)]="editedGift.totalValue"
+                [(ngModel)]="editedGift.value"
                 class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-24 text-sm outline-none focus:border-[#a88b6d]"
               />
             </td>
@@ -270,11 +270,11 @@
               <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div
                   class="h-full bg-[#a88b6d]"
-                  [style.width.%]="(gift.collected / gift.totalValue) * 100"
+                  [style.width.%]="(gift.collected / gift.value) * 100"
                 ></div>
               </div>
               <span class="text-xs text-gray-500"
-                >{{ (gift.collected / gift.totalValue) * 100 | number: '1.0-0' }}%</span
+                >{{ (gift.collected / gift.value) * 100 | number: '1.0-0' }}%</span
               >
             </td>
 
@@ -325,10 +325,10 @@
               <div *ngIf="editingId === gift.id" class="flex gap-2 justify-center">
                 <button
                   (click)="saveEdit()"
-                  [disabled]="editedGift.totalValue! < gift.collected"
+                  [disabled]="editedGift.value! < gift.collected"
                   class="flex items-center justify-center w-8 h-8 rounded transition-colors"
                   [ngClass]="
-                    editedGift.totalValue! < gift.collected
+                    editedGift.value! < gift.collected
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                       : 'text-green-600 bg-green-100 border border-green-200 hover:bg-green-200 cursor-pointer'
                   "

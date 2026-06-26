@@ -1,12 +1,20 @@
-<div style="font-family: 'Lato', sans-serif; background: #fdf8f4; min-height: 100vh;">
-
+<div style="font-family: 'Lato', sans-serif; background: #fdf8f4; min-height: 100vh">
   <div class="pt-28 pb-24 px-6 max-w-6xl mx-auto">
-
     <div class="text-center mb-12">
       <p class="uppercase tracking-[0.2em] text-sm mb-3" style="color: #c9a882">Lista de</p>
-      <h1 style="font-family: 'Playfair Display', serif; font-size: 2.8rem; color: #2c1f14; font-weight: 400">Presentes</h1>
+      <h1
+        style="
+          font-family: 'Playfair Display', serif;
+          font-size: 2.8rem;
+          color: #2c1f14;
+          font-weight: 400;
+        "
+      >
+        Presentes
+      </h1>
       <p class="mt-3 max-w-md mx-auto" style="color: #7a6259">
-        Sua presença já é o maior presente. Mas se desejar contribuir, escolha um dos nossos sonhos abaixo.
+        Sua presença já é o maior presente. Mas se desejar contribuir, escolha um dos nossos sonhos
+        abaixo.
       </p>
     </div>
 
@@ -26,26 +34,27 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (gift of filteredGifts; track gift.id) {
-
         <marketplace-card-component
           [gift]="gift"
           [getPercentage]="getPercentage"
-          (onContribute)="openModal($event)">
+          (onContribute)="openModal($event)"
+        >
         </marketplace-card-component>
-
       } @empty {
         <div class="col-span-full text-center py-12 text-secondary font-body-md">
           Nenhum presente encontrado nesta categoria.
         </div>
       }
     </div>
-
   </div>
 </div>
 
 @if (selectedGift) {
   <app-modal
+    *ngIf="selectedGift"
     [gift]="selectedGift"
-    (close)="closeModal()">
+    (close)="closeModal()"
+    (donationSuccess)="loadGifts()"
+  >
   </app-modal>
 }

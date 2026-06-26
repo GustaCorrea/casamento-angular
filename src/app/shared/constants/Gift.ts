@@ -2,9 +2,9 @@ export interface Gift {
   id?: number;
   name: string;
   description: string;
-  totalValue: number;
+  value: number;
   imageUrl?: string;
-  category: string;
+  type: string;
 
   collected: number;
   status: 'ATIVO' | 'COMPLETO' | 'INDISPONIVEL';
