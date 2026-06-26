@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';// Ajuste o caminho se necessário
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Guest } from '../../../../shared/constants/Guest';
 import { GuestService } from '../../services/guest/guest-service';
 
@@ -36,7 +36,8 @@ export class GuestPage implements OnInit {
 
   constructor(
     private guestService: GuestService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     this.initForms();
   }
@@ -65,6 +66,7 @@ export class GuestPage implements OnInit {
       next: (data) => {
         this.convidados = data;
         this.calculateMetrics();
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Erro ao carregar convidados:', err)
     });
@@ -114,11 +116,13 @@ export class GuestPage implements OnInit {
     const formValue = this.guestForm.value;
 
     // Monta o objeto separando email/telefone dinamicamente com base na escolha do botão
+    // Adicionado o campo 'restricoes' por padrão para blindar o payload enviado à tradução do Service
     const guestData: Partial<Guest> = {
       nome: formValue.nome,
       limiteAcompanhantes: formValue.limiteAcompanhantes,
       email: this.guestContactType === 'email' ? formValue.contato : '',
       telefone: this.guestContactType === 'tel' ? formValue.contato : '',
+      restricoes: this.isEditing && this.selectedGuest ? this.selectedGuest.restricoes : '',
       status: this.isEditing && this.selectedGuest ? this.selectedGuest.status : 'Aguardando',
       acompanhantes: this.isEditing && this.selectedGuest ? this.selectedGuest.acompanhantes : []
     };
@@ -129,6 +133,7 @@ export class GuestPage implements OnInit {
           next: () => {
             this.loadGuests();
             this.closeModal();
+            this.cdr.detectChanges();
           },
           error: (err) => console.error('Erro ao atualizar convidado:', err)
         });
@@ -146,7 +151,7 @@ export class GuestPage implements OnInit {
   deleteGuest(id: number): void {
     if (confirm('Tem certeza que deseja excluir este convidado?')) {
       this.guestService.deleteGuest(id).subscribe({
-        next: () => this.loadGuests(),
+        next: () => {this.loadGuests(),this.cdr.detectChanges();},
         error: (err) => console.error('Erro ao excluir convidado:', err)
       });
     }
@@ -215,6 +220,7 @@ export class GuestPage implements OnInit {
       next: () => {
         this.loadGuests();
         this.closeCompanionModal();
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Erro ao atualizar acompanhantes:', err)
     });
@@ -224,7 +230,7 @@ export class GuestPage implements OnInit {
     if (confirm('Deseja realmente remover este acompanhante?') && guest.acompanhantes) {
       guest.acompanhantes.splice(index, 1);
       this.guestService.updateGuest(guest.id!, guest).subscribe({
-        next: () => this.loadGuests(),
+        next: () => {this.loadGuests(),this.cdr.detectChanges();},
         error: (err) => console.error('Erro ao remover acompanhante:', err)
       });
     }
