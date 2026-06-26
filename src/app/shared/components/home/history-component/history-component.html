@@ -1,0 +1,28 @@
+<section class="py-24 px-6" style="background-color: #fdf8f4;">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+            <p class="uppercase tracking-[0.2em] text-sm mb-3" style="color: #c9a882;">
+                Nossa História
+            </p>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #2c1f14; font-weight: 400;">
+                Uma história de amor
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <div *ngFor="let photo of photos" class="group overflow-hidden rounded-sm">
+                <div class="overflow-hidden aspect-3/4" style="background-color: #ede3dc;">
+
+                    <img [src]="photo.src" [alt]="photo.caption"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+
+                </div>
+                <p class="text-center mt-3" style="color: #7a6259; font-style: italic;">
+                    {{ photo.caption }}
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
