@@ -1,0 +1,156 @@
+import { Component, OnInit } from '@angular/core';
+import { GiftService } from '../../services/gift/gift-service'; // ajuste o caminho se necessário
+import { Gift } from '../../../../shared/constants/Gift';
+
+@Component({
+  selector: 'app-gift-page',
+  standalone: false,
+  templateUrl: './gift-page.html',
+})
+export class GiftPage implements OnInit {
+
+  allGifts: Gift[] = [];
+  gifts: Gift[] = []; // Lista exibida na tabela (filtrada/buscada)
+
+  searchTerm: string = '';
+  activeCategory: string = 'Todos';
+
+  // Controle do Formulário Inline (Criação)
+  isFormOpen: boolean = false;
+  newGift: Partial<Gift> = {};
+
+  // Controle de Edição
+  editingId: number | undefined = undefined;
+  editedGift: Partial<Gift> = {};
+
+  constructor(private giftService: GiftService) {}
+
+  ngOnInit(): void {
+    this.loadGifts();
+  }
+
+  // GET: Carrega os presentes da API
+  loadGifts(): void {
+    this.giftService.getGifts().subscribe({
+      next: (data) => {
+        this.allGifts = data;
+        this.applyFilterAndSearch();
+      },
+      error: (err) => console.error('Erro ao buscar presentes:', err)
+    });
+  }
+
+  // Filtros combinados de Categoria e Termo de Busca
+  applyFilterAndSearch(): void {
+    this.gifts = this.allGifts.filter(gift => {
+      const matchCategory = this.activeCategory === 'Todos' || gift.category === this.activeCategory;
+      const matchSearch = gift.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                          gift.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+      return matchCategory && matchSearch;
+    });
+  }
+
+  searchGift(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchTerm = input.value;
+    this.applyFilterAndSearch();
+  }
+
+  filterByCategory(category: string): void {
+    this.activeCategory = category;
+    this.applyFilterAndSearch();
+  }
+
+  toggleForm(): void {
+    this.isFormOpen = !this.isFormOpen;
+    if (this.isFormOpen) {
+      this.newGift = { category: 'Casa' }; // Valor inicial padrão do <select>
+    } else {
+      this.newGift = {};
+    }
+  }
+
+  // POST: Cadastra um novo presente
+  saveGift(): void {
+    if (!this.newGift.name || !this.newGift.totalValue) {
+      alert('Por favor, preencha o nome e o valor da meta.');
+      return;
+    }
+
+    // Inicializadores padrão para um novo presente enviado à API
+    const giftPayload: Gift = {
+      name: this.newGift.name,
+      category: this.newGift.category || 'Casa',
+      totalValue: Number(this.newGift.totalValue),
+      description: this.newGift.description || '',
+      imageUrl: this.newGift.imageUrl || '',
+      collected: 0,
+      status: 'ATIVO'
+    };
+
+    this.giftService.addGift(giftPayload).subscribe({
+      next: (savedGift) => {
+        this.allGifts.push(savedGift);
+        this.applyFilterAndSearch();
+        this.isFormOpen = false;
+        this.newGift = {};
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Erro ao cadastrar o presente.');
+      }
+    });
+  }
+
+  startEditing(gift: Gift): void {
+    this.editingId = gift.id;
+    this.editedGift = { ...gift };
+  }
+
+  cancelEdit(): void {
+    this.editingId = undefined;
+    this.editedGift = {};
+  }
+
+  // PUT: Atualiza as edições na linha correspondente
+  saveEdit(): void {
+    if (!this.editingId || !this.editedGift.name || !this.editedGift.totalValue) {
+      alert('Por favor, preencha os campos obrigatórios.');
+      return;
+    }
+
+    this.giftService.updateGift(this.editingId, this.editedGift as Gift).subscribe({
+      next: (updatedGift) => {
+        const index = this.allGifts.findIndex(g => g.id === this.editingId);
+        if (index !== -1) {
+          this.allGifts[index] = updatedGift;
+        }
+        this.applyFilterAndSearch();
+        this.editingId = undefined;
+        this.editedGift = {};
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Erro ao atualizar o presente.');
+      }
+    });
+  }
+
+  // DELETE: Remove o item
+  deleteEvent(gift: Gift): void {
+    const confirmDelete = window.confirm(`Tem certeza que deseja excluir o presente "${gift.name}"?`);
+
+    if (confirmDelete && gift.id) {
+      this.giftService.deleteGift(gift.id).subscribe({
+        next: () => {
+          this.allGifts = this.allGifts.filter(g => g.id !== gift.id);
+          this.applyFilterAndSearch();
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Erro ao deletar o presente.');
+        }
+      });
+    }
+  }
+}

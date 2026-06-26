@@ -284,7 +284,7 @@
                 [ngClass]="{
                   'text-orange-600 bg-orange-50': gift.status === 'ATIVO',
                   'text-green-600 bg-green-50': gift.status === 'COMPLETO',
-                  'text-gray-500 bg-gray-100': gift.status === 'INDISPONIVEL',
+                  'text-gray-500 bg-gray-100': gift.status === 'INDISPONIVEL'
                 }"
               >
                 {{ gift.status | titlecase }}
@@ -292,7 +292,7 @@
             </td>
 
             <td class="py-4 px-6 text-sm">
-              <div *ngIf="editingId !== gift.id" class="flex gap-2">
+              <div *ngIf="editingId !== gift.id" class="flex gap-2 justify-center">
                 <button
                   (click)="startEditing(gift)"
                   class="flex items-center justify-center w-8 h-8 bg-[#f5ebe0] text-[#8b5a2b] hover:bg-[#e6d5c3] rounded transition-colors cursor-pointer"
@@ -308,6 +308,7 @@
                 </button>
 
                 <button
+                  (click)="deleteEvent(gift)"
                   class="flex items-center justify-center w-8 h-8 bg-[#ffe4e1] text-[#cd5c5c] hover:bg-[#ffcccb] rounded transition-colors cursor-pointer"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -321,7 +322,7 @@
                 </button>
               </div>
 
-              <div *ngIf="editingId === gift.id" class="flex gap-2">
+              <div *ngIf="editingId === gift.id" class="flex gap-2 justify-center">
                 <button
                   (click)="saveEdit()"
                   [disabled]="editedGift.totalValue! < gift.collected"
@@ -345,7 +346,7 @@
 
                 <button
                   (click)="cancelEdit()"
-                  class="flex items-center justify-center w-6 h-6 text-red-500 bg-red-50 border border-red-200 hover:bg-red-100 rounded cursor-pointer"
+                  class="flex items-center justify-center w-8 h-8 text-red-500 bg-red-50 border border-red-200 hover:bg-red-100 rounded cursor-pointer"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
