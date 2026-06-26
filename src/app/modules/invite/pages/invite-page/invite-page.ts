@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -9,6 +9,7 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ApiService } from '../../../../core/services/api-service';
 
 @Component({
   selector: 'app-invite-page',
@@ -30,11 +31,14 @@ export class InvitePage {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private api: ApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.inviteForm = this.fb.group({
       name: ['', Validators.required],
-      contact: ['', Validators.required],
-      contactType: ['phone'], // 'phone' | 'email'
+      contact: ['', [Validators.required, Validators.email]], // Configura o campo de contato como email obrigatório
+      contactType: ['email'], // Fixa o tipo de contato para e-mail
+      dietaryRestrictions: [''], // Mapeia as restrições alimentares do convidado principal
       companions: this.fb.array([]),
     });
 
@@ -51,13 +55,12 @@ export class InvitePage {
 
   createCompanionFormGroup(): FormGroup {
     const group = this.fb.group({
-      name: [''],
+      name: ['', Validators.required],
       contact: [''],
       contactType: ['phone'],
       dietary: [''],
     });
 
-    // CORREÇÃO: Validamos se o tipo emitido coincide com o esperado antes de passar para a função
     group.get('contactType')?.valueChanges.subscribe((type) => {
       if (type === 'phone' || type === 'email') {
         this.updateContactValidators(group, type);
@@ -95,20 +98,44 @@ export class InvitePage {
 
     if (type === 'email') {
       validators.push(Validators.email);
-      contactControl.setValidators(validators);
-    } else {
-      contactControl.setValidators(validators);
     }
+    contactControl.setValidators(validators);
     contactControl.updateValueAndValidity();
   }
 
   handleSubmit(): void {
-    if (this.inviteForm.valid) {
-      this.submitted = true;
-      this.router.navigate(['/']);
-      console.log('Dados do Formulário:', this.inviteForm.value);
-    } else {
+    if (this.inviteForm.invalid) {
       this.inviteForm.markAllAsTouched();
+      return;
     }
+
+    const formValues = this.inviteForm.value;
+    const emailDigitado = formValues.contact.trim().toLowerCase();
+
+    // Transforma os acompanhantes criados no formulário reativo para os objetos CompanionDTO
+    const companionsPayload = formValues.companions.map((c: any) => ({
+      name: c.name,
+      email: c.contactType === 'email' ? c.contact : '',
+      dietaryRestriction: c.dietary || ''
+    }));
+
+    // Constrói o objeto estruturado baseado no PresenceFormDTO esperado no Back-end
+    const presenceFormDTO = {
+      companions: companionsPayload,
+      dietaryRestrictions: formValues.dietaryRestrictions || '',
+      linkValidation: emailDigitado // Encaminha o e-mail para busca dinâmica no Spring
+    };
+
+    // Envia a requisição POST para a nova rota que valida via e-mail direto no banco
+    this.api.post<any>('guest/confirm-by-email', presenceFormDTO).subscribe({
+      next: () => {
+        this.submitted = true;
+        this.cdr.detectChanges()
+      },
+      error: (err) => {
+        console.error('Erro ao confirmar presença:', err);
+        alert('Não encontramos um convite ativo para o e-mail digitado ou o limite de acompanhantes foi ultrapassado.');
+      }
+    });
   }
 }
