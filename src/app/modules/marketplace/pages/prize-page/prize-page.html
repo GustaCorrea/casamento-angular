@@ -27,8 +27,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (gift of filteredGifts; track gift.id) {
 
-        <marketplace-card-component 
-          [gift]="gift" 
+        <marketplace-card-component
+          [gift]="gift"
           [getPercentage]="getPercentage"
           (onContribute)="openModal($event)">
         </marketplace-card-component>
@@ -45,7 +45,7 @@
 
 @if (selectedGift) {
   <app-modal
-    [gift]="selectedGift" 
+    [gift]="selectedGift"
     (close)="closeModal()">
   </app-modal>
 }

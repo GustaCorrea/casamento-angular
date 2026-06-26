@@ -1,7 +1,7 @@
 <div class="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col" style="height:380px;">
-  <img src="{{ gift.imageUrl }}" alt="{{ gift.title }}" class="w-full object-cover" style="height:180px; flex-shrink:0;"/>
+  <img src="{{ gift.imageUrl }}" alt="{{ gift.name }}" class="w-full object-cover" style="height:180px; flex-shrink:0;"/>
   <div class="p-4 flex flex-col flex-1">
-    <h3 class="font-semibold text-lg" style="color:#2c1f14;">{{ gift.title }}</h3>
+    <h3 class="font-semibold text-lg" style="color:#2c1f14;">{{ gift.name }}</h3>
     <p class="text-sm mt-2" style="color:#7a6259;">{{ gift.description }}</p>
 
     <div class="mt-auto">
@@ -9,12 +9,16 @@
         <div class="h-2 rounded-full" style="background:#8b5e52;" [style.width]="getPercentage(gift) + '%'"></div>
       </div>
       <div class="flex justify-between items-center mt-2 text-sm" style="color:#7a6259;">
-        <span>R$ {{ gift.currentAmount }}</span>
-        <span>R$ {{ gift.targetAmount }}</span>
+        <span>R$ {{ gift.collected }}</span>
+        <span>R$ {{ gift.totalValue }}</span>
       </div>
       <div class="mt-4 text-center">
-        <button (click)="contribute()" class="px-4 py-2 text-white rounded-md transition-colors" style="background:#8b5e52;">
-          Contribuir
+        <button
+          (click)="contribute()"
+          [disabled]="gift.status === 'COMPLETO'"
+          class="px-4 py-2 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          style="background:#8b5e52;">
+          {{ gift.status === 'COMPLETO' ? 'Concluído' : 'Contribuir' }}
         </button>
       </div>
     </div>

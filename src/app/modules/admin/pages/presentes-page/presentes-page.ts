@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Gift } from '../../../../core/models/gift';
 import { Presente } from '../../services/presente';
+import { Gift } from '../../../../shared/constants/Gift';
 
 
 @Component({
@@ -27,7 +27,7 @@ export class PresentesPage implements OnInit {
     this.presenteService.getGifts().subscribe({
       next: (data) => {
         this.gifts = data;
-        this.filterByCategory(this.activeCategory); 
+        this.filterByCategory(this.activeCategory);
       },
       error: (err) => console.error('Erro ao buscar presentes', err)
     });
@@ -36,7 +36,7 @@ export class PresentesPage implements OnInit {
   calculatePercentage(collected: number, total: number): number {
     if (total === 0) return 0;
     const percentage = (collected / total) * 100;
-    return Math.min(Math.round(percentage), 100); 
+    return Math.min(Math.round(percentage), 100);
   }
 
   filterByCategory(category: string) {
@@ -50,14 +50,14 @@ export class PresentesPage implements OnInit {
 
   searchGift(event: Event) {
     const term = (event.target as HTMLInputElement).value.toLowerCase();
-    
+
     if (!term) {
       this.filterByCategory(this.activeCategory);
       return;
     }
 
-    this.filteredGifts = this.gifts.filter(g => 
-      g.name.toLowerCase().includes(term) && 
+    this.filteredGifts = this.gifts.filter(g =>
+      g.name.toLowerCase().includes(term) &&
       (this.activeCategory === 'Todos' || g.category === this.activeCategory)
     );
   }
@@ -74,13 +74,13 @@ export class PresentesPage implements OnInit {
     if (!id) return;
     if (confirm('Tem certeza que deseja excluir este presente?')) {
       this.gifts = this.gifts.filter(g => g.id !== id);
-      this.filterByCategory(this.activeCategory); 
+      this.filterByCategory(this.activeCategory);
     }
   }
 
 
   isFormOpen: boolean = false;
-  
+
   // Objeto temporário que vai receber os dados do HTML
   newGift: Partial<Gift> = {
     name: '',
@@ -108,22 +108,22 @@ export class PresentesPage implements OnInit {
       totalValue: this.newGift.totalValue!,
       imageUrl: this.newGift.imageUrl || '',
       category: this.newGift.category!,
-      collected: 0, 
-      status: 'ATIVO' 
+      collected: 0,
+      status: 'ATIVO'
     };
 
     // Salva através do Service
     this.presenteService.createGift(giftToSave).subscribe({
       next: (savedGift) => {
-        this.loadGifts(); 
-        this.isFormOpen = false; 
-        
-        this.newGift = { 
-          name: '', 
-          description: '', 
-          totalValue: 0, 
-          imageUrl: '', 
-          category: 'Casa' 
+        this.loadGifts();
+        this.isFormOpen = false;
+
+        this.newGift = {
+          name: '',
+          description: '',
+          totalValue: 0,
+          imageUrl: '',
+          category: 'Casa'
         };
       },
       error: (err) => console.error('Erro ao salvar o presente:', err)
@@ -142,13 +142,13 @@ export class PresentesPage implements OnInit {
 
  saveEdit() {
   // Lógica futura da API aqui...
-  
+
   // Atualizando a lista local
   const index = this.gifts.findIndex(g => g.id === this.editingId);
   if (index !== -1) {
     this.gifts[index] = { ...this.editedGift };
   }
-  
+
   this.editingId = null;
 }
 }

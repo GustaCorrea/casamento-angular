@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { Gift } from '../../../core/models/gift';
+import { Gift } from '../../../shared/constants/Gift';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,7 @@ export class Presente {
   // Método GET
   getGifts(): Observable<Gift[]> {
     // JAVA: return this.http.get<Gift[]>(this.apiUrl);
-    return of(this.mockGifts); 
+    return of(this.mockGifts);
   }
 
   // Método POST

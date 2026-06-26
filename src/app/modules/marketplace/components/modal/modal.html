@@ -2,7 +2,6 @@
 
   <div class="relative w-full max-w-md rounded-2xl overflow-hidden" style="background:white; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
 
-    <!-- Botão fechar -->
     <button
       (click)="closeModal()"
       aria-label="Fechar"
@@ -13,26 +12,22 @@
       </svg>
     </button>
 
-    <!-- Imagem de cabeçalho -->
     <div class="overflow-hidden" style="height:176px;">
       <img
         [src]="gift?.imageUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuA0OZ90kTMhls9CVg7pz49ztn-k0MJTzk1jNzXA5BFCXRk6osPHPF84FPvWfy5rde5wzDNikmW9UZQRm7NWI5PHq43c-uiNUdXcixV_Od4toVSsdhKNwxGQw3yAl3k-gbXQyyoZrtnPvNXb8omW5TkFxeIqFxCiUlkiF-NfksLiADi7msTPQ4ep8PBpzhqtqJXefPIsufPFIYY1oGQ1cHqAp8JvBfdFuiKulbBEw16xxCCIweOmb-F9-YhTg0eYyTUoI8b0oo7hcm7j'"
-        alt="{{ gift?.title }}"
+        alt="{{ gift?.name }}"
         class="w-full h-full object-cover"/>
     </div>
 
-    <!-- Conteúdo -->
     <div class="flex flex-col gap-5 p-6" style="background:white;">
 
-      <!-- Título -->
       <div>
         <h2 class="mb-1" style="font-size:22px; font-family:Georgia,serif; font-weight:600; color:#3b2a24; margin:0 0 4px;">
-          {{ gift?.title || 'Contribuição' }}
+          {{ gift?.name || 'Contribuição' }}
         </h2>
         <p style="font-size:14px; color:#8a7570; margin:0;">Escolha o valor da sua contribuição</p>
       </div>
 
-      <!-- Valores pré-definidos -->
       <div class="grid grid-cols-4 gap-2">
         @for (val of predefinedValues; track val) {
           <button
@@ -47,10 +42,8 @@
         }
       </div>
 
-      <!-- Formulário -->
       <form (ngSubmit)="submitContribution()" class="flex flex-col gap-2.5">
 
-        <!-- Outro valor com spinners -->
         <div class="relative">
           <input
             type="number"
@@ -70,7 +63,6 @@
           </div>
         </div>
 
-        <!-- Nome -->
         <input
           type="text"
           [value]="donorName"
@@ -81,7 +73,6 @@
           style="box-sizing:border-box; background:#faf5f3; border:1px solid #e8d9d3; padding:14px 16px; font-size:14px; color:#3b2a24;"
           placeholder="Seu nome"/>
 
-        <!-- Mensagem -->
         <textarea
           [value]="message"
           name="message"
@@ -91,7 +82,6 @@
           style="box-sizing:border-box; background:#faf5f3; border:1px solid #e8d9d3; padding:14px 16px; font-size:14px; color:#3b2a24; font-family:inherit;"
           placeholder="Deixe uma mensagem carinhosa (opcional)"></textarea>
 
-        <!-- Botão submit -->
         <button
           type="submit"
           class="w-full font-medium text-white transition-all active:scale-[0.98] mt-1"
@@ -101,5 +91,3 @@
 
       </form>
     </div>
-  </div>
-</div>

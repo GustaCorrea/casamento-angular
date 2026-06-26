@@ -5,7 +5,7 @@ export interface Gift {
   totalValue: number;
   imageUrl?: string;
   category: string;
-  
+
   collected: number;
-  status: 'ATIVO' | 'COMPLETO' | 'INDISPONIVEL'; 
+  status: 'ATIVO' | 'COMPLETO' | 'INDISPONIVEL';
 }

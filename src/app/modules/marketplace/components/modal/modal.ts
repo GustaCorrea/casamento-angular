@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { GiftItem } from '../../constants/GiftItem';
+import { Gift } from '../../../../shared/constants/Gift';
 
 @Component({
   selector: 'app-modal',
@@ -7,7 +7,7 @@ import { GiftItem } from '../../constants/GiftItem';
   templateUrl: './modal.html'
 })
 export class Modal {
-  @Input() gift: GiftItem | null = null;
+  @Input() gift: Gift | null = null;
   @Output() close = new EventEmitter<void>();
 
   predefinedValues = [50, 100, 200, 500];
