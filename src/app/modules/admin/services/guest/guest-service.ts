@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from '../../../../core/services/api-service';
-import { Guest } from '../../../../shared/constants/Guest';
 
 @Injectable({
   providedIn: 'root',
@@ -10,23 +9,20 @@ import { Guest } from '../../../../shared/constants/Guest';
 export class GuestService {
   constructor(private api: ApiService) {}
 
-  // Busca a lista do back-end e mapeia para o formato do Front-end
-  getGuests(): Observable<Guest[]> {
+  getGuests(): Observable<any[]> {
     return this.api.get<any[]>('guest').pipe(
-      map(backendGifts => backendGifts.map(g => this.convertToFront(g)))
+      map(backendGuests => backendGuests.map(g => this.convertToFront(g)))
     );
   }
 
-  // Envia dados mapeados para o formato que o VisitorRequestDTO espera
-  addGuest(convidado: Guest): Observable<Guest> {
+  addGuest(convidado: any): Observable<any> {
     const body = this.convertToBack(convidado);
     return this.api.post<any>('guest', body).pipe(
       map(g => this.convertToFront(g))
     );
   }
 
-  // Envia dados atualizados mapeados para o formato correto
-  updateGuest(id: number, convidado: Guest): Observable<Guest> {
+  updateGuest(id: number, convidado: any): Observable<any> {
     const body = this.convertToBack(convidado);
     return this.api.put<any>(`guest/${id}`, body).pipe(
       map(g => this.convertToFront(g))
@@ -37,36 +33,30 @@ export class GuestService {
     return this.api.delete<void>(`guest/${id}`);
   }
 
-  // --- MÉTODOS AUXILIARES DE CONVERSÃO (DE-PARA) ---
+  confirmPresencePublic(id: number): Observable<any> {
+    return this.api.post<any>(`guest/${id}/confirm`, {}).pipe(
+      map(g => this.convertToFront(g))
+    );
+  }
 
-  private convertToFront(b: any): Guest {
+  // --- MÉTODOS AUXILIARES LIMPOS ---
+
+  private convertToFront(b: any): any {
     return {
       id: b.id,
       nome: b.name,
-      email: b.email,
-      restricoes: b.dietaryRestrictions || '',
-      limiteAcompanhantes: b.maxCompanions || 0,
-      // Converte a propriedade boolean presenceConfirmed para o enum status esperado na tela
-      status: b.presenceConfirmed ? 'Confirmado' : 'Aguardando',
-      acompanhantes: (b.companions || []).map((c: any) => ({
-        nome: c.name,
-        email: c.email,
-        restricoes: c.dietaryRestriction // mapeia se houver
-      }))
+      email: b.email || '',
+      telefone: b.phone || '', 
+      status: b.presenceConfirmed ? 'Confirmado' : 'Aguardando'
     };
   }
 
-  private convertToBack(f: Guest): any {
+  private convertToBack(f: any): any {
     return {
-      name: f.nome,
-      email: f.email || '',
-      maxCompanions: f.limiteAcompanhantes || 0,
-      dietaryRestrictions: f.restricoes || '',
-      companions: (f.acompanhantes || []).map(c => ({
-        name: c.nome,
-        email: c.email || '',
-        dietaryRestriction: (c as any).restricoes || ''
-      }))
+      name: f.nome || f.name,
+      email: f.email || null,
+      phone: f.telefone || f.phone || null, 
+      presenceConfirmed: f.status === 'Confirmado'
     };
   }
 }
