@@ -50,11 +50,6 @@
 </div>
 
 @if (selectedGift) {
-  <app-modal
-    *ngIf="selectedGift"
-    [gift]="selectedGift"
-    (close)="closeModal()"
-    (donationSuccess)="loadGifts()"
-  >
+  <app-modal [gift]="selectedGift" (close)="closeModal()" (donationSuccess)="loadGifts()">
   </app-modal>
 }

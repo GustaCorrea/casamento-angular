@@ -22,6 +22,9 @@ export class GiftPage implements OnInit {
   editingId: number | undefined = undefined;
   editedGift: Partial<Gift> = {};
 
+  selectedFile: File | null = null;
+ imagePreview: string | null = null;
+
   constructor(private giftService: GiftService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
@@ -167,4 +170,19 @@ export class GiftPage implements OnInit {
       });
     }
   }
+  
+  onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    this.selectedFile = file;
+
+    // Converte o arquivo em DataURL para exibir na tela antes de salvar
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+ }
 }

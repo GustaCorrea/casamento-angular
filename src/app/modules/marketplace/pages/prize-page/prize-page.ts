@@ -1,8 +1,7 @@
-
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Gift } from '../../../../shared/constants/Gift';
-import { ApiService } from '../../../../core/services/api-service'; // Garanta que o caminho está correto
-import { Observable } from 'rxjs';
+import { ApiService } from '../../../../core/services/api-service';
+
 
 @Component({
   selector: 'app-prize-page',
@@ -14,22 +13,23 @@ export class PrizePage implements OnInit {
   filter: string = 'Todos';
   selectedGift: Gift | null = null;
 
-  // Lista onde vamos salvar os presentes vindos do Banco de Dados
+  // Lista de presentes vinda do Banco de Dados
   allGifts: Gift[] = [];
 
-  // 1. Injeta o ApiService e o ChangeDetectorRef para garantir a renderização
-  constructor(private api: ApiService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private api: ApiService, 
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    // 2. Dispara a busca quando a página carrega
     this.loadGifts();
   }
 
   loadGifts(): void {
-    this.api.get<Gift[]>('gifts').subscribe({ // Ajuste a rota para a sua rota de presentes (ex: 'gifts' ou 'prizes')
+    this.api.get<Gift[]>('gifts').subscribe({
       next: (dadosDoBackend: Gift[]) => {
         this.allGifts = dadosDoBackend;
-        this.cdr.detectChanges(); // Garante que a tela vai atualizar com os novos dados
+        this.cdr.detectChanges(); // Garante atualização do DOM
       },
       error: (err) => {
         console.error('Erro ao buscar presentes do backend:', err);
@@ -37,23 +37,26 @@ export class PrizePage implements OnInit {
     });
   }
 
-  // 3. Atualizado para usar o 'allGifts' do banco e tratar letras maiúsculas
+  // Filtro corrigido com tratamento seguro para 'type' ou 'category' opcionais/undefined
   get filteredGifts(): Gift[] {
     if (this.filter === 'Todos') {
       return this.allGifts;
     }
-    // O backend retorna "CASA" ou "VIAGEM". O .toUpperCase() faz o filtro bater perfeitamente
-    return this.allGifts.filter((g: Gift) => g.type.toUpperCase() === this.filter.toUpperCase());
+    
+    return this.allGifts.filter((g: Gift) => {
+      const giftCategory = (g.type || g.category || '').toUpperCase();
+      return giftCategory === this.filter.toUpperCase();
+    });
   }
 
   setFilter(cat: string): void {
     this.filter = cat;
   }
 
-  getPercentage(gift: Gift): number {
+  getPercentage = (gift: Gift): number => {
     if (!gift.value) return 0;
-    return Math.min(100, Math.round((gift.collected / gift.value) * 100));
-  }
+    return Math.min(100, Math.round(((gift.collected || 0) / gift.value) * 100));
+  };
 
   isComplete(gift: Gift): boolean {
     return this.getPercentage(gift) >= 100;

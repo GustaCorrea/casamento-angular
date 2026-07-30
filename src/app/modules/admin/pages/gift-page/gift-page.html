@@ -53,6 +53,7 @@
     </div>
 
     <div *ngIf="isFormOpen" class="space-y-4">
+      <!-- Primeira Linha: Nome, Categoria, Valor e Botão de Salvar -->
       <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
         <input
           type="text"
@@ -98,6 +99,7 @@
         </button>
       </div>
 
+      <!-- Segunda Linha: Descrição e Seleção do Arquivo de Imagem -->
       <div class="flex flex-col md:flex-row gap-4 items-start md:items-center pt-2">
         <input
           type="text"
@@ -106,262 +108,273 @@
           class="w-full md:flex-1 px-4 py-2 bg-[#fdfbf9] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm text-brand-dark placeholder-gray-400"
         />
 
+        <!-- Input de Upload da Imagem -->
+        <div class="w-full md:flex-1 flex flex-col gap-1">
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#8c6b5d] file:text-white hover:file:bg-[#735548] cursor-pointer bg-[#fdfbf9] border border-gray-200 rounded-md py-1 px-2"
+          />
+        </div>
+      </div>
+
+      <!-- Preview da Imagem Selecionada antes de enviar -->
+      <div *ngIf="imagePreview" class="flex items-center gap-3 pt-1">
+        <span class="text-xs text-gray-500 font-medium">Pré-visualização:</span>
+        <div class="w-16 h-16 rounded border border-gray-200 overflow-hidden bg-gray-50">
+          <img [src]="imagePreview" class="w-full h-full object-cover" alt="Preview da imagem" />
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
+      <div class="relative w-full md:w-96">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+        </div>
         <input
           type="text"
-          [(ngModel)]="newGift.imageUrl"
-          placeholder="URL da imagem (opcional por enquanto)"
-          class="w-full md:flex-1 px-4 py-2 bg-[#fdfbf9] border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm text-brand-dark placeholder-gray-400"
+          placeholder="Buscar presente..."
+          (input)="searchGift($event)"
+          class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md bg-[#f9f8f6] focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm"
         />
       </div>
-    </div>
-  </div>
 
-  <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
-    <div class="relative w-full md:w-96">
-      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          ></path>
-        </svg>
-      </div>
-      <input
-        type="text"
-        placeholder="Buscar presente..."
-        (input)="searchGift($event)"
-        class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md bg-[#f9f8f6] focus:outline-none focus:ring-1 focus:ring-[#8c6b5d] text-sm"
-      />
-    </div>
-
-    <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-      <button
-        (click)="filterByCategory('Todos')"
-        [ngClass]="
-          activeCategory === 'Todos'
-            ? 'bg-[#8c6b5d] text-white border-transparent'
-            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
-        "
-        class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
-      >
-        Todos
-      </button>
-
-      <button
-        (click)="filterByCategory('Casa')"
-        [ngClass]="
-          activeCategory === 'Casa'
-            ? 'bg-[#8c6b5d] text-white border-transparent'
-            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
-        "
-        class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
-      >
-        Casa
-      </button>
-
-      <button
-        (click)="filterByCategory('Viagem')"
-        [ngClass]="
-          activeCategory === 'Viagem'
-            ? 'bg-[#8c6b5d] text-white border-transparent'
-            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
-        "
-        class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
-      >
-        Viagem
-      </button>
-
-      <button
-        (click)="filterByCategory('Experiência')"
-        [ngClass]="
-          activeCategory === 'Experiência'
-            ? 'bg-[#8c6b5d] text-white border-transparent'
-            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
-        "
-        class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
-      >
-        Experiência
-      </button>
-
-      <button
-        (click)="filterByCategory('Eletrodoméstico')"
-        [ngClass]="
-          activeCategory === 'Eletrodoméstico'
-            ? 'bg-[#8c6b5d] text-white border-transparent'
-            : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
-        "
-        class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
-      >
-        Eletrodoméstico
-      </button>
-    </div>
-  </div>
-
-  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full text-left text-sm whitespace-nowrap">
-        <thead
-          class="bg-[#f9f8f6] text-gray-500 border-b border-gray-200 uppercase text-xs tracking-wider"
+      <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+        <button
+          (click)="filterByCategory('Todos')"
+          [ngClass]="
+            activeCategory === 'Todos'
+              ? 'bg-[#8c6b5d] text-white border-transparent'
+              : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+          "
+          class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
         >
-          <tr>
-            <th class="px-6 py-4 font-medium">Nome</th>
-            <th class="px-6 py-4 font-medium">Categoria</th>
-            <th class="px-6 py-4 font-medium">Meta</th>
-            <th class="px-6 py-4 font-medium">Arrecadado</th>
-            <th class="px-6 py-4 font-medium">%</th>
-            <th class="px-6 py-4 font-medium">Status</th>
-            <th class="px-6 py-4 font-medium text-center">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let gift of gifts"
-            class="border-b border-gray-100 hover:bg-white/50 transition-colors"
+          Todos
+        </button>
+
+        <button
+          (click)="filterByCategory('Casa')"
+          [ngClass]="
+            activeCategory === 'Casa'
+              ? 'bg-[#8c6b5d] text-white border-transparent'
+              : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+          "
+          class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
+        >
+          Casa
+        </button>
+
+        <button
+          (click)="filterByCategory('Viagem')"
+          [ngClass]="
+            activeCategory === 'Viagem'
+              ? 'bg-[#8c6b5d] text-white border-transparent'
+              : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+          "
+          class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
+        >
+          Viagem
+        </button>
+
+        <button
+          (click)="filterByCategory('Experiência')"
+          [ngClass]="
+            activeCategory === 'Experiência'
+              ? 'bg-[#8c6b5d] text-white border-transparent'
+              : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+          "
+          class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
+        >
+          Experiência
+        </button>
+
+        <button
+          (click)="filterByCategory('Eletrodoméstico')"
+          [ngClass]="
+            activeCategory === 'Eletrodoméstico'
+              ? 'bg-[#8c6b5d] text-white border-transparent'
+              : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+          "
+          class="px-4 py-1.5 text-sm rounded-md border shadow-sm transition"
+        >
+          Eletrodoméstico
+        </button>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm whitespace-nowrap">
+          <thead
+            class="bg-[#f9f8f6] text-gray-500 border-b border-gray-200 uppercase text-xs tracking-wider"
           >
-            <td class="py-4 px-6 text-sm text-gray-700">
-              <span *ngIf="editingId !== gift.id">{{ gift.name }}</span>
+            <tr>
+              <th class="px-6 py-4 font-medium">Nome</th>
+              <th class="px-6 py-4 font-medium">Categoria</th>
+              <th class="px-6 py-4 font-medium">Meta</th>
+              <th class="px-6 py-4 font-medium">Arrecadado</th>
+              <th class="px-6 py-4 font-medium">%</th>
+              <th class="px-6 py-4 font-medium">Status</th>
+              <th class="px-6 py-4 font-medium text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let gift of gifts"
+              class="border-b border-gray-100 hover:bg-white/50 transition-colors"
+            >
+              <td class="py-4 px-6 text-sm text-gray-700">
+                <span *ngIf="editingId !== gift.id">{{ gift.name }}</span>
 
-              <input
-                *ngIf="editingId === gift.id"
-                type="text"
-                [(ngModel)]="editedGift.name"
-                class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-full text-sm outline-none focus:border-[#a88b6d]"
-              />
-            </td>
+                <input
+                  *ngIf="editingId === gift.id"
+                  type="text"
+                  [(ngModel)]="editedGift.name"
+                  class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-full text-sm outline-none focus:border-[#a88b6d]"
+                />
+              </td>
 
-            <td class="py-4 px-6 text-sm">
-              <span
-                *ngIf="editingId !== gift.id"
-                class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs"
-              >
-                {{ gift.type }}
-              </span>
-
-              <select
-                *ngIf="editingId === gift.id"
-                [(ngModel)]="editedGift.type"
-                class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-full text-sm outline-none focus:border-[#a88b6d]"
-              >
-                <option value="Viagem">Viagem</option>
-                <option value="Experiência">Experiência</option>
-                <option value="Casa">Casa</option>
-                <option value="Eletrodoméstico">Eletrodoméstico</option>
-              </select>
-            </td>
-
-            <td class="py-4 px-6 text-sm text-gray-600">
-              <span *ngIf="editingId !== gift.id">R$ {{ gift.value | number: '1.2-2' }}</span>
-
-              <input
-                *ngIf="editingId === gift.id"
-                type="number"
-                [(ngModel)]="editedGift.value"
-                class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-24 text-sm outline-none focus:border-[#a88b6d]"
-              />
-            </td>
-
-            <td class="py-4 px-6 text-sm text-gray-600">
-              R$ {{ gift.collected | number: '1.2-2' }}
-            </td>
-
-            <td class="py-4 px-6 text-sm flex items-center gap-2 mt-2">
-              <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  class="h-full bg-[#a88b6d]"
-                  [style.width.%]="(gift.collected / gift.value) * 100"
-                ></div>
-              </div>
-              <span class="text-xs text-gray-500"
-                >{{ (gift.collected / gift.value) * 100 | number: '1.0-0' }}%</span
-              >
-            </td>
-
-            <td class="py-4 px-6 text-sm">
-              <span
-                class="px-2 py-1 text-xs font-medium rounded"
-                [ngClass]="{
-                  'text-orange-600 bg-orange-50': gift.status === 'ATIVO',
-                  'text-green-600 bg-green-50': gift.status === 'COMPLETO',
-                  'text-gray-500 bg-gray-100': gift.status === 'INDISPONIVEL'
-                }"
-              >
-                {{ gift.status | titlecase }}
-              </span>
-            </td>
-
-            <td class="py-4 px-6 text-sm">
-              <div *ngIf="editingId !== gift.id" class="flex gap-2 justify-center">
-                <button
-                  (click)="startEditing(gift)"
-                  class="flex items-center justify-center w-8 h-8 bg-[#f5ebe0] text-[#8b5a2b] hover:bg-[#e6d5c3] rounded transition-colors cursor-pointer"
+              <td class="py-4 px-6 text-sm">
+                <span
+                  *ngIf="editingId !== gift.id"
+                  class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                    />
-                  </svg>
-                </button>
+                  {{ gift.type }}
+                </span>
 
-                <button
-                  (click)="deleteEvent(gift)"
-                  class="flex items-center justify-center w-8 h-8 bg-[#ffe4e1] text-[#cd5c5c] hover:bg-[#ffcccb] rounded transition-colors cursor-pointer"
+                <select
+                  *ngIf="editingId === gift.id"
+                  [(ngModel)]="editedGift.type"
+                  class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-full text-sm outline-none focus:border-[#a88b6d]"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
-              </div>
+                  <option value="Viagem">Viagem</option>
+                  <option value="Experiência">Experiência</option>
+                  <option value="Casa">Casa</option>
+                  <option value="Eletrodoméstico">Eletrodoméstico</option>
+                </select>
+              </td>
 
-              <div *ngIf="editingId === gift.id" class="flex gap-2 justify-center">
-                <button
-                  (click)="saveEdit()"
-                  [disabled]="editedGift.value! < gift.collected"
-                  class="flex items-center justify-center w-8 h-8 rounded transition-colors"
-                  [ngClass]="
-                    editedGift.value! < gift.collected
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'text-green-600 bg-green-100 border border-green-200 hover:bg-green-200 cursor-pointer'
-                  "
-                  title="A meta não pode ser menor que o valor já arrecadado"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                </button>
+              <td class="py-4 px-6 text-sm text-gray-600">
+                <span *ngIf="editingId !== gift.id">R$ {{ gift.value | number: '1.2-2' }}</span>
 
-                <button
-                  (click)="cancelEdit()"
-                  class="flex items-center justify-center w-8 h-8 text-red-500 bg-red-50 border border-red-200 hover:bg-red-100 rounded cursor-pointer"
+                <input
+                  *ngIf="editingId === gift.id"
+                  type="number"
+                  [(ngModel)]="editedGift.value"
+                  class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-24 text-sm outline-none focus:border-[#a88b6d]"
+                />
+              </td>
+
+              <td class="py-4 px-6 text-sm text-gray-600">
+                R$ {{ gift.collected | number: '1.2-2' }}
+              </td>
+
+              <td class="py-4 px-6 text-sm flex items-center gap-2 mt-2">
+                <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-[#a88b6d]"
+                    [style.width.%]="(gift.collected / gift.value) * 100"
+                  ></div>
+                </div>
+                <span class="text-xs text-gray-500"
+                  >{{ (gift.collected / gift.value) * 100 | number: '1.0-0' }}%</span
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+
+              <td class="py-4 px-6 text-sm">
+                <span
+                  class="px-2 py-1 text-xs font-medium rounded"
+                  [ngClass]="{
+                    'text-orange-600 bg-orange-50': gift.status === 'ATIVO',
+                    'text-green-600 bg-green-50': gift.status === 'COMPLETO',
+                    'text-gray-500 bg-gray-100': gift.status === 'INDISPONIVEL',
+                  }"
+                >
+                  {{ gift.status | titlecase }}
+                </span>
+              </td>
+
+              <td class="py-4 px-6 text-sm">
+                <div *ngIf="editingId !== gift.id" class="flex gap-2 justify-center">
+                  <button
+                    (click)="startEditing(gift)"
+                    class="flex items-center justify-center w-8 h-8 bg-[#f5ebe0] text-[#8b5a2b] hover:bg-[#e6d5c3] rounded transition-colors cursor-pointer"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                      />
+                    </svg>
+                  </button>
+
+                  <button
+                    (click)="deleteEvent(gift)"
+                    class="flex items-center justify-center w-8 h-8 bg-[#ffe4e1] text-[#cd5c5c] hover:bg-[#ffcccb] rounded transition-colors cursor-pointer"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                <div *ngIf="editingId === gift.id" class="flex gap-2 justify-center">
+                  <button
+                    (click)="saveEdit()"
+                    [disabled]="editedGift.value! < gift.collected"
+                    class="flex items-center justify-center w-8 h-8 rounded transition-colors"
+                    [ngClass]="
+                      editedGift.value! < gift.collected
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        : 'text-green-600 bg-green-100 border border-green-200 hover:bg-green-200 cursor-pointer'
+                    "
+                    title="A meta não pode ser menor que o valor já arrecadado"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      ></path>
+                    </svg>
+                  </button>
+
+                  <button
+                    (click)="cancelEdit()"
+                    class="flex items-center justify-center w-8 h-8 text-red-500 bg-red-50 border border-red-200 hover:bg-red-100 rounded cursor-pointer"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
