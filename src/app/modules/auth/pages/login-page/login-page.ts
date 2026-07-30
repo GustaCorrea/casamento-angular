@@ -35,26 +35,24 @@ export class LoginPage {
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) return;
+  if (this.loginForm.invalid) return;
 
-    this.isLoading = true;
-    this.errorMessage = '';
+  this.isLoading = true;
+  this.errorMessage = '';
 
-    this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
-        this.isLoading = false;
-        // Redireciona para o painel após o login
-        this.router.navigate(['/system/presentes']);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        // Mensagem para erro 401
-        if (err.status === 401) {
-          this.errorMessage = 'Usuário ou senha incorretos.';
-        } else {
-          this.errorMessage = 'Ocorreu um erro no servidor. Tente novamente.';
-        }
+  this.authService.login(this.loginForm.value).subscribe({
+    next: () => {
+      this.isLoading = false;
+      this.router.navigate(['/system/']);
+    },
+    error: (err) => {
+      this.isLoading = false;
+      if (err.status === 401 || err.status === 403) {
+        this.errorMessage = 'Usuário ou senha incorretos.';
+      } else {
+        this.errorMessage = 'Ocorreu um erro no servidor. Tente novamente.';
       }
-    });
-  }
+    }
+  });
+}
 }
