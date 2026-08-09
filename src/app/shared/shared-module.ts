@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonComponent } from './components/common/button-component/button-component';
 import { HeaderComponent } from './components/layouts/header-component/header-component';
 import { HomePage } from './pages/home-page/home-page';
 import { AppRoutingModule } from '../app-routing-module';
@@ -11,7 +10,6 @@ import { SidebarComponent } from './components/layouts/sidebar-component/sidebar
 
 @NgModule({
   declarations: [
-    ButtonComponent,
     HeaderComponent,
     HomePage,
     FooterComponent,
