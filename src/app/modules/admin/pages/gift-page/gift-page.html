@@ -211,6 +211,7 @@
       </div>
     </div>
 
+    <!-- Tabela Limpa (Vitrine) -->
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-left text-sm whitespace-nowrap">
@@ -218,12 +219,10 @@
             class="bg-[#f9f8f6] text-gray-500 border-b border-gray-200 uppercase text-xs tracking-wider"
           >
             <tr>
-              <th class="px-6 py-4 font-medium">Nome</th>
+              <th class="px-6 py-4 font-medium">Nome do Presente</th>
               <th class="px-6 py-4 font-medium">Categoria</th>
-              <th class="px-6 py-4 font-medium">Meta</th>
-              <th class="px-6 py-4 font-medium">Arrecadado</th>
-              <th class="px-6 py-4 font-medium">%</th>
-              <th class="px-6 py-4 font-medium">Status</th>
+              <th class="px-6 py-4 font-medium">Valor Unitário</th>
+              <th class="px-6 py-4 font-medium">Arrecadação Total</th>
               <th class="px-6 py-4 font-medium text-center">Ações</th>
             </tr>
           </thead>
@@ -233,39 +232,44 @@
               class="border-b border-gray-100 hover:bg-white/50 transition-colors"
             >
               <td class="py-4 px-6 text-sm text-gray-700">
-                <span *ngIf="editingId !== gift.id">{{ gift.name }}</span>
-
-                <input
-                  *ngIf="editingId === gift.id"
-                  type="text"
-                  [(ngModel)]="editedGift.name"
-                  class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-full text-sm outline-none focus:border-[#a88b6d]"
-                />
+                <div class="flex items-center gap-3">
+                  <img
+                    *ngIf="editingId !== gift.id"
+                    [src]="
+                      gift.imageUrl
+                        ? 'http://localhost:8080' + gift.imageUrl
+                        : 'assets/images/placeholder.jpg'
+                    "
+                    class="w-10 h-10 rounded object-cover border border-gray-200"
+                  />
+                  <span *ngIf="editingId !== gift.id" class="font-medium">{{ gift.name }}</span>
+                  <input
+                    *ngIf="editingId === gift.id"
+                    type="text"
+                    [(ngModel)]="editedGift.name"
+                    class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-full text-sm outline-none focus:border-[#a88b6d]"
+                  />
+                </div>
               </td>
-
               <td class="py-4 px-6 text-sm">
                 <span
                   *ngIf="editingId !== gift.id"
-                  class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs"
+                  class="px-3 py-1 bg-stone-100 text-[#8c6b5d] rounded-full text-xs font-semibold"
+                  >{{ gift.type }}</span
                 >
-                  {{ gift.type }}
-                </span>
-
                 <select
                   *ngIf="editingId === gift.id"
                   [(ngModel)]="editedGift.type"
                   class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-full text-sm outline-none focus:border-[#a88b6d]"
                 >
-                  <option value="Viagem">Viagem</option>
-                  <option value="Experiência">Experiência</option>
-                  <option value="Casa">Casa</option>
-                  <option value="Eletrodoméstico">Eletrodoméstico</option>
+                  <option value="VIAGEM">Viagem</option>
+                  <option value="EXPERIÊNCIA">Experiência</option>
+                  <option value="CASA">Casa</option>
+                  <option value="ELETRODOMÉSTICO">Eletrodoméstico</option>
                 </select>
               </td>
-
-              <td class="py-4 px-6 text-sm text-gray-600">
+              <td class="py-4 px-6 text-sm text-gray-600 font-medium">
                 <span *ngIf="editingId !== gift.id">R$ {{ gift.value | number: '1.2-2' }}</span>
-
                 <input
                   *ngIf="editingId === gift.id"
                   type="number"
@@ -273,41 +277,15 @@
                   class="border border-[#e5dcd3] bg-[#fcf9f6] rounded px-3 py-1 w-24 text-sm outline-none focus:border-[#a88b6d]"
                 />
               </td>
-
-              <td class="py-4 px-6 text-sm text-gray-600">
+              <td class="py-4 px-6 text-sm text-green-700 font-semibold">
                 R$ {{ gift.collected | number: '1.2-2' }}
               </td>
-
-              <td class="py-4 px-6 text-sm flex items-center gap-2 mt-2">
-                <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    class="h-full bg-[#a88b6d]"
-                    [style.width.%]="(gift.collected / gift.value) * 100"
-                  ></div>
-                </div>
-                <span class="text-xs text-gray-500"
-                  >{{ (gift.collected / gift.value) * 100 | number: '1.0-0' }}%</span
-                >
-              </td>
-
-              <td class="py-4 px-6 text-sm">
-                <span
-                  class="px-2 py-1 text-xs font-medium rounded"
-                  [ngClass]="{
-                    'text-orange-600 bg-orange-50': gift.status === 'ATIVO',
-                    'text-green-600 bg-green-50': gift.status === 'COMPLETO',
-                    'text-gray-500 bg-gray-100': gift.status === 'INDISPONIVEL',
-                  }"
-                >
-                  {{ gift.status | titlecase }}
-                </span>
-              </td>
-
               <td class="py-4 px-6 text-sm">
                 <div *ngIf="editingId !== gift.id" class="flex gap-2 justify-center">
                   <button
                     (click)="startEditing(gift)"
                     class="flex items-center justify-center w-8 h-8 bg-[#f5ebe0] text-[#8b5a2b] hover:bg-[#e6d5c3] rounded transition-colors cursor-pointer"
+                    title="Editar"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -318,10 +296,10 @@
                       />
                     </svg>
                   </button>
-
                   <button
                     (click)="deleteEvent(gift)"
                     class="flex items-center justify-center w-8 h-8 bg-[#ffe4e1] text-[#cd5c5c] hover:bg-[#ffcccb] rounded transition-colors cursor-pointer"
+                    title="Excluir"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -333,18 +311,11 @@
                     </svg>
                   </button>
                 </div>
-
                 <div *ngIf="editingId === gift.id" class="flex gap-2 justify-center">
                   <button
                     (click)="saveEdit()"
-                    [disabled]="editedGift.value! < gift.collected"
-                    class="flex items-center justify-center w-8 h-8 rounded transition-colors"
-                    [ngClass]="
-                      editedGift.value! < gift.collected
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'text-green-600 bg-green-100 border border-green-200 hover:bg-green-200 cursor-pointer'
-                    "
-                    title="A meta não pode ser menor que o valor já arrecadado"
+                    class="flex items-center justify-center w-8 h-8 text-green-600 bg-green-100 border border-green-200 hover:bg-green-200 rounded transition-colors cursor-pointer"
+                    title="Salvar"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -355,10 +326,10 @@
                       ></path>
                     </svg>
                   </button>
-
                   <button
                     (click)="cancelEdit()"
                     class="flex items-center justify-center w-8 h-8 text-red-500 bg-red-50 border border-red-200 hover:bg-red-100 rounded cursor-pointer"
+                    title="Cancelar"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path

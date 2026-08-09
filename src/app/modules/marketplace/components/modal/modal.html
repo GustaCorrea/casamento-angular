@@ -1,68 +1,65 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-
-  <div class="relative w-full max-w-md rounded-2xl overflow-hidden" style="background:white; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-
+  <div
+    class="relative w-full max-w-md rounded-2xl overflow-hidden"
+    style="background: white; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3)"
+  >
+    <!-- Botão Fechar -->
     <button
       (click)="closeModal()"
-      aria-label="Fechar"
       class="absolute top-3 right-3 z-10 flex items-center justify-center rounded-full transition-colors"
-      style="width:32px; height:32px; background:rgba(255,255,255,0.85); border:none; cursor:pointer; color:#3b2a24;">
-      <svg style="width:16px; height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      style="
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.85);
+        color: #3b2a24;
+        cursor: pointer;
+        border: none;
+      "
+    >
+      <svg style="width: 16px; height: 16px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
       </svg>
     </button>
 
-    <div class="overflow-hidden" style="height:176px;">
+    <div class="overflow-hidden" style="height: 176px">
       <img
-        [src]="gift?.imageUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuA0OZ90kTMhls9CVg7pz49ztn-k0MJTzk1jNzXA5BFCXRk6osPHPF84FPvWfy5rde5wzDNikmW9UZQRm7NWI5PHq43c-uiNUdXcixV_Od4toVSsdhKNwxGQw3yAl3k-gbXQyyoZrtnPvNXb8omW5TkFxeIqFxCiUlkiF-NfksLiADi7msTPQ4ep8PBpzhqtqJXefPIsufPFIYY1oGQ1cHqAp8JvBfdFuiKulbBEw16xxCCIweOmb-F9-YhTg0eYyTUoI8b0oo7hcm7j'"
+        [src]="
+          gift?.imageUrl
+            ? 'http://localhost:8080' + gift!.imageUrl
+            : 'assets/images/placeholder.jpg'
+        "
         alt="{{ gift?.name }}"
-        class="w-full h-full object-cover"/>
+        class="w-full h-full object-cover"
+      />
     </div>
 
-    <div class="flex flex-col gap-5 p-6" style="background:white;">
-
+    <!-- Conteúdo -->
+    <div class="flex flex-col gap-5 p-6" style="background: white">
       <div>
-        <h2 class="mb-1" style="font-size:22px; font-family:Georgia,serif; font-weight:600; color:#3b2a24; margin:0 0 4px;">
-          {{ gift?.name || 'Contribuição' }}
+        <h2
+          class="mb-1"
+          style="
+            font-size: 22px;
+            font-family: Georgia, serif;
+            font-weight: 600;
+            color: #3b2a24;
+            margin: 0 0 4px;
+          "
+        >
+          {{ gift?.name }}
         </h2>
-        <p style="font-size:14px; color:#8a7570; margin:0;">Escolha o valor da sua contribuição</p>
+        <p style="font-size: 15px; color: #8b5e52; font-weight: 500; margin: 0">
+          Valor da Cota: R$ {{ gift?.value | number: '1.2-2' }}
+        </p>
       </div>
 
-      <div class="grid grid-cols-4 gap-2">
-        @for (val of predefinedValues; track val) {
-          <button
-            (click)="selectValue(val)"
-            [style.background]="selectedValue === val && !customValue ? '#8b5e52' : '#faf5f3'"
-            [style.color]="selectedValue === val && !customValue ? 'white' : '#3b2a24'"
-            [style.border]="selectedValue === val && !customValue ? '1px solid #8b5e52' : '1px solid #e8d9d3'"
-            class="rounded-lg font-medium transition-all"
-            style="padding:10px 4px; font-size:13px; cursor:pointer;">
-            R$ {{ val }}
-          </button>
-        }
-      </div>
-
-      <form (ngSubmit)="submitContribution()" class="flex flex-col gap-2.5">
-
-        <div class="relative">
-          <input
-            type="number"
-            [value]="customValue"
-            name="customValue"
-            (input)="onCustomValueInput($event)"
-            class="w-full rounded-xl placeholder:text-[#8a7570] focus:outline-none focus:ring-1"
-            style="box-sizing:border-box; background:#faf5f3; border:1px solid #e8d9d3; padding:14px 44px 14px 16px; font-size:14px; color:#3b2a24;"
-            placeholder="Outro valor (R$)"/>
-          <div class="absolute right-2.5 top-1/2 -translate-y-1/2 flex flex-col gap-0.5">
-            <button type="button" (click)="stepCustomValue(10)"
-              class="flex items-center justify-center rounded-sm"
-              style="background:#8b5e52; border:none; width:18px; height:14px; cursor:pointer; color:white; font-size:9px; line-height:1;">▲</button>
-            <button type="button" (click)="stepCustomValue(-10)"
-              class="flex items-center justify-center rounded-sm"
-              style="background:#8b5e52; border:none; width:18px; height:14px; cursor:pointer; color:white; font-size:9px; line-height:1;">▼</button>
-          </div>
-        </div>
-
+      <form (ngSubmit)="submitContribution()" class="flex flex-col gap-3">
+        <!-- Input Nome -->
         <input
           type="text"
           [value]="donorName"
@@ -70,24 +67,71 @@
           required
           (input)="donorName = $any($event.target).value"
           class="w-full rounded-xl placeholder:text-[#8a7570] focus:outline-none focus:ring-1"
-          style="box-sizing:border-box; background:#faf5f3; border:1px solid #e8d9d3; padding:14px 16px; font-size:14px; color:#3b2a24;"
-          placeholder="Seu nome"/>
+          style="
+            box-sizing: border-box;
+            background: #faf5f3;
+            border: 1px solid #e8d9d3;
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #3b2a24;
+          "
+          placeholder="Seu nome completo"
+        />
 
+        <!-- Input Mensagem -->
         <textarea
           [value]="message"
           name="message"
           (input)="message = $any($event.target).value"
           rows="3"
           class="w-full rounded-xl placeholder:text-[#8a7570] focus:outline-none focus:ring-1 resize-none"
-          style="box-sizing:border-box; background:#faf5f3; border:1px solid #e8d9d3; padding:14px 16px; font-size:14px; color:#3b2a24; font-family:inherit;"
-          placeholder="Deixe uma mensagem carinhosa (opcional)"></textarea>
+          style="
+            box-sizing: border-box;
+            background: #faf5f3;
+            border: 1px solid #e8d9d3;
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #3b2a24;
+            font-family: inherit;
+          "
+          placeholder="Deixe uma mensagem carinhosa (opcional)"
+        ></textarea>
 
+        <!-- Botão de Ação -->
         <button
           type="submit"
-          class="w-full font-medium text-white transition-all active:scale-[0.98] mt-1"
-          style="background:#8b5e52; border:none; border-radius:10px; padding:16px; font-size:15px; cursor:pointer;">
-          Contribuir com R$ {{ displayValue }}
+          [disabled]="isLoading"
+          class="w-full font-medium text-white transition-all active:scale-[0.98] mt-2 disabled:opacity-70 flex justify-center items-center"
+          style="
+            background: #8b5e52;
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 15px;
+            cursor: pointer;
+          "
+        >
+          <span *ngIf="!isLoading">Ir para o Pagamento</span>
+          <span *ngIf="isLoading" class="flex items-center gap-2">
+            <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            Processando...
+          </span>
         </button>
-
       </form>
     </div>
+  </div>
+</div>

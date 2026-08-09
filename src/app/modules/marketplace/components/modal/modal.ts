@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Gift } from '../../../../shared/constants/Gift';
-import { ApiService } from '../../../../core/services/api-service'; // Importe seu ApiService
+import { ApiService } from '../../../../core/services/api-service';
 
 @Component({
   selector: 'app-modal',
@@ -10,87 +10,52 @@ import { ApiService } from '../../../../core/services/api-service'; // Importe s
 export class Modal {
   @Input() gift: Gift | null = null;
   @Output() close = new EventEmitter<void>();
-  @Output() donationSuccess = new EventEmitter<void>(); // Novo evento para avisar a página pai que deu certo e atualizar a listagem
+  @Output() donationSuccess = new EventEmitter<void>();
 
-  predefinedValues = [50, 100, 200, 500];
-  selectedValue: number = 50;
-
-  customValue: string = '';
   donorName: string = '';
   message: string = '';
+  isLoading: boolean = false;
 
-  // 1. Injeta o ApiService no construtor
   constructor(private api: ApiService) {}
-
-  get displayValue(): string {
-    const parsed = parseFloat(this.customValue);
-    if (!isNaN(parsed) && parsed > 0) return parsed.toString();
-    if (this.selectedValue) return this.selectedValue.toString();
-    return '—';
-  }
-
-  selectValue(value: number): void {
-    this.selectedValue = value;
-    this.customValue = '';
-  }
-
-  onCustomValueInput(event: Event): void {
-    this.customValue = (event.target as HTMLInputElement).value;
-    if (this.customValue) {
-      this.selectedValue = 0;
-    }
-  }
-
-  stepCustomValue(step: number): void {
-    const current = parseFloat(this.customValue) || 0;
-    const next = Math.max(0, current + step);
-    this.customValue = next > 0 ? next.toString() : '';
-    this.selectedValue = 0;
-  }
 
   closeModal(): void {
     this.close.emit();
   }
 
   submitContribution(): void {
-    const finalValue = parseFloat(this.customValue) || this.selectedValue;
-
+    // 1. Valida se o presente existe
     if (!this.gift || !this.gift.id) {
-      alert('Erro: Presente inválido.');
-      return;
-    }
-
-    if (!finalValue || finalValue <= 0) {
-      alert('Por favor, selecione ou informe um valor.');
+      alert('Erro: Presente não selecionado para doação.');
       return;
     }
 
     if (!this.donorName.trim()) {
-      alert('Por favor, informe seu nome.');
+      alert('Por favor, preencha o seu nome completo.');
       return;
     }
 
-    // 2. Monta o objeto no formato exato que o seu DonationRequestDTO do Java espera!
-    // Lembra do seu record: name, value, message
-    const contributionData = {
+    this.isLoading = true;
+
+    const donationData = {
       name: this.donorName.trim(),
-      value: finalValue,
-      message: this.message.trim() || null // se tiver vazio envia nulo suave
+      message: this.message.trim() || null
     };
 
-    // 3. Faz a requisição PUT usando a rota correta do Back-end
-    // A rota no Java é: @PutMapping("/donate/{id}")
-    this.api.put<void>(`gifts/donate/${this.gift.id}`, contributionData).subscribe({
-      next: () => {
-        alert('Muito obrigado! Sua contribuição foi recebida com sucesso.');
-        this.donationSuccess.emit(); // Emite o evento para a página pai recarregar os saldos
-        this.closeModal();
+    // 4. Dispara a requisição para o Spring Boot
+    this.api.post<any>(`gifts/${this.gift.id}/donations`, donationData).subscribe({
+      next: (response) => {
+        if (response && response.checkoutUrl) {
+          window.location.href = response.checkoutUrl; 
+        } else {
+          alert('Erro ao gerar o link de pagamento. Tente novamente.');
+          this.isLoading = false;
+        }
       },
       error: (err) => {
-        console.error('Erro ao processar doação:', err);
-        // Exibe a mensagem de erro que você configurou no Java caso o presente esteja COMPLETO
-        const errorMessage = err?.error?.message || 'Erro ao processar doação. Tente novamente.';
+        console.error('Erro ao gerar link de pagamento:', err);
+        const errorMessage = err?.error?.message || 'Ocorreu um erro ao processar o pagamento. Tente novamente.';
         alert(errorMessage);
+        this.isLoading = false;
       }
     });
   }

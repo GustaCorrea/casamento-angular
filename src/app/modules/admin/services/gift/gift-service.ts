@@ -7,20 +7,22 @@ import { Gift } from '../../../../shared/constants/Gift';
   providedIn: 'root',
 })
 export class GiftService {
+
   constructor(private api: ApiService) {}
-    getGifts(): Observable<Gift[]> {
-      return this.api.get<Gift[]>('gifts');
-    }
+  
+  getGifts(): Observable<Gift[]> {
+    return this.api.get<Gift[]>('gifts');
+  }
 
-    addGift(convidado: Gift): Observable<Gift> {
-      return this.api.post<Gift>('gifts', convidado);
-    }
+  addGift(giftData: FormData): Observable<Gift> {
+    return this.api.post<Gift>('gifts', giftData);
+  }
 
-    updateGift(id: number, convidado: Gift): Observable<Gift> {
-      return this.api.put<Gift>(`gifts/${id}`, convidado);
-    }
+  updateGift(id: number, giftData: FormData): Observable<Gift> {
+    return this.api.put<Gift>(`gifts/${id}`, giftData);
+  }
 
-    deleteGift(id: number): Observable<void> {
-      return this.api.delete<void>(`gifts/${id}`);
-    }
+  deleteGift(id: number): Observable<void> {
+    return this.api.delete<void>(`gifts/${id}`);
+  }
 }

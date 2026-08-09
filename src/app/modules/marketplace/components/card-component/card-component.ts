@@ -8,10 +8,6 @@ import { Gift } from '../../../../shared/constants/Gift';
 })
 export class CardComponent {
   @Input() gift!: Gift;
-
-  // Recebe a função do pai. Ela aceita um GiftItem e retorna um número.
-  @Input() getPercentage!: (gift: Gift) => number;
-
   @Output() onContribute = new EventEmitter<Gift>();
 
   contribute(): void {

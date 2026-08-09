@@ -34,11 +34,7 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (gift of filteredGifts; track gift.id) {
-        <marketplace-card-component
-          [gift]="gift"
-          [getPercentage]="getPercentage"
-          (onContribute)="openModal($event)"
-        >
+        <marketplace-card-component [gift]="gift" (onContribute)="openModal($event)">
         </marketplace-card-component>
       } @empty {
         <div class="col-span-full text-center py-12 text-secondary font-body-md">

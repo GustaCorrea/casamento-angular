@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { GiftService } from '../../services/gift/gift-service'; // ajuste o caminho se necessário
+import { GiftService } from '../../services/gift/gift-service';
 import { Gift } from '../../../../shared/constants/Gift';
 
 @Component({
@@ -9,21 +9,22 @@ import { Gift } from '../../../../shared/constants/Gift';
 })
 export class GiftPage implements OnInit {
   allGifts: Gift[] = [];
-  gifts: Gift[] = []; // Lista exibida na tabela (filtrada/buscada)
+  gifts: Gift[] = [];
 
   searchTerm: string = '';
   activeCategory: string = 'Todos';
 
-  // Controle do Formulário Inline (Criação)
   isFormOpen: boolean = false;
   newGift: Partial<Gift> = {};
 
-  // Controle de Edição
   editingId: number | undefined = undefined;
   editedGift: Partial<Gift> = {};
 
-  selectedFile: File | null = null;
- imagePreview: string | null = null;
+  // Guarda o arquivo físico para enviar ao Java
+  selectedFile: File | null = null; 
+  
+  // Guarda apenas o visual para o HTML (preview)
+  imagePreview: string | null = null; 
 
   constructor(private giftService: GiftService, private cdr: ChangeDetectorRef) {}
 
@@ -31,7 +32,6 @@ export class GiftPage implements OnInit {
     this.loadGifts();
   }
 
-  // GET: Carrega os presentes da API
   loadGifts(): void {
     this.giftService.getGifts().subscribe({
       next: (data) => {
@@ -43,10 +43,8 @@ export class GiftPage implements OnInit {
     });
   }
 
-  // Filtros combinados de Categoria e Termo de Busca
   applyFilterAndSearch(): void {
     this.gifts = this.allGifts.filter((gift) => {
-      // Compara transformando ambos para UPPERCASE para ignorar se veio 'CASA' ou 'Casa'
       const matchCategory =
         this.activeCategory === 'Todos' ||
         gift.type?.toUpperCase() === this.activeCategory.toUpperCase();
@@ -76,36 +74,55 @@ export class GiftPage implements OnInit {
   toggleForm(): void {
     this.isFormOpen = !this.isFormOpen;
     if (this.isFormOpen) {
-      this.newGift = { type: 'Casa' }; // Mantém 'Casa' idêntico ao <option value="Casa">
+      this.newGift = { type: 'Casa' };
     } else {
       this.newGift = {};
     }
+    
+    // IMPORTANTE: Limpar a seleção de arquivo ao abrir/fechar o form
+    this.imagePreview = null;
+    this.selectedFile = null; 
   }
 
-  // POST: Cadastra um novo presente
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.selectedFile = file; // Salva o arquivo real para o FormData
+
+      // O FileReader continua aqui apenas para mostrar a foto na tela (preview)
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   saveGift(): void {
     if (!this.newGift.name || !this.newGift.value) {
-      alert('Por favor, preencha o nome e o valor da meta.');
+      alert('Por favor, preencha o nome e o valor.');
       return;
     }
 
-    // Inicializadores padrão para um novo presente enviado à API
-    const giftPayload: Gift = {
-      name: this.newGift.name,
-      type: this.newGift.type || 'Casa',
-      value: Number(this.newGift.value),
-      description: this.newGift.description || '',
-      imageUrl: this.newGift.imageUrl || '',
-      collected: 0,
-      status: 'ATIVO',
-    };
+    // 1. Criando o FormData ao invés de um objeto JSON
+    const formData = new FormData();
+    formData.append('name', this.newGift.name);
+    formData.append('type', this.newGift.type?.toUpperCase() || 'CASA');
+    formData.append('value', this.newGift.value.toString());
+    formData.append('description', this.newGift.description || '');
 
-    this.giftService.addGift(giftPayload).subscribe({
-      next: (savedGift) => {
+    // 2. Anexando o arquivo físico se ele existir
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
+
+    // 3. Enviando o FormData para o Service
+    this.giftService.addGift(formData as any).subscribe({
+      next: (savedGift: Gift) => {
         this.allGifts.push(savedGift);
         this.applyFilterAndSearch();
-        this.isFormOpen = false;
-        this.newGift = {};
+        this.toggleForm();
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -118,29 +135,45 @@ export class GiftPage implements OnInit {
   startEditing(gift: Gift): void {
     this.editingId = gift.id;
     this.editedGift = { ...gift };
+    this.imagePreview = gift.imageUrl ? 'http://localhost:8080' + gift.imageUrl : null; 
+    
+    this.selectedFile = null; 
   }
 
   cancelEdit(): void {
     this.editingId = undefined;
     this.editedGift = {};
+    this.imagePreview = null;
+    this.selectedFile = null; // Limpa o cache do arquivo
   }
 
-  // PUT: Atualiza as edições na linha correspondente
   saveEdit(): void {
     if (!this.editingId || !this.editedGift.name || !this.editedGift.value) {
       alert('Por favor, preencha os campos obrigatórios.');
       return;
     }
 
-    this.giftService.updateGift(this.editingId, this.editedGift as Gift).subscribe({
-      next: (updatedGift) => {
+    // 1. Criando o FormData para a edição
+    const formData = new FormData();
+    formData.append('name', this.editedGift.name);
+    formData.append('type', this.editedGift.type?.toUpperCase() || 'CASA');
+    formData.append('value', this.editedGift.value.toString());
+    formData.append('description', this.editedGift.description || '');
+
+    // 2. Anexando arquivo SOMENTE se o usuário escolheu uma nova foto
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
+
+    // 3. Enviando para o Service
+    this.giftService.updateGift(this.editingId, formData as any).subscribe({
+      next: (updatedGift: Gift) => {
         const index = this.allGifts.findIndex((g) => g.id === this.editingId);
         if (index !== -1) {
           this.allGifts[index] = updatedGift;
         }
         this.applyFilterAndSearch();
-        this.editingId = undefined;
-        this.editedGift = {};
+        this.cancelEdit();
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -150,12 +183,8 @@ export class GiftPage implements OnInit {
     });
   }
 
-  // DELETE: Remove o item
   deleteEvent(gift: Gift): void {
-    const confirmDelete = window.confirm(
-      `Tem certeza que deseja excluir o presente "${gift.name}"?`,
-    );
-
+    const confirmDelete = window.confirm(`Tem certeza que deseja excluir o presente "${gift.name}"?`);
     if (confirmDelete && gift.id) {
       this.giftService.deleteGift(gift.id).subscribe({
         next: () => {
@@ -163,26 +192,8 @@ export class GiftPage implements OnInit {
           this.applyFilterAndSearch();
           this.cdr.detectChanges();
         },
-        error: (err) => {
-          console.error(err);
-          alert('Erro ao deletar o presente.');
-        },
+        error: (err) => alert('Erro ao deletar o presente.'),
       });
     }
   }
-  
-  onFileSelected(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files[0]) {
-    const file = input.files[0];
-    this.selectedFile = file;
-
-    // Converte o arquivo em DataURL para exibir na tela antes de salvar
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview = reader.result as string;
-    };
-    reader.readAsDataURL(file);
-  }
- }
 }
