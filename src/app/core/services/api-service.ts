@@ -8,7 +8,7 @@ import { environment } from '../../../enviroments/enviroment';
 })
 export class ApiService {
   // Agora a URL base é lida dinamicamente a partir do environment gerado pelo .env
-  private baseUrl = 'http://localhost:8080/api';
+  private baseUrl = 'https://api.marialauraepedro.com.br';
 
   constructor(private http: HttpClient) {}
 
