@@ -11,6 +11,7 @@ import { SchedulePage } from './modules/admin/pages/schedule-page/schedule-page'
 import { GiftPage } from './modules/admin/pages/gift-page/gift-page';
 import { GuestPage } from './modules/admin/pages/guest-page/guest-page';
 import { RsvpPage } from './modules/invite/pages/rsvp-page/rsvp-page';
+import { SuccessPage } from './modules/marketplace/pages/success-page/success-page';
 
 const routes: Routes = [
   {
@@ -20,7 +21,8 @@ const routes: Routes = [
     children: [
       { path: '', component: HomePage },
       { path: 'presentes', component: PrizePage },
-      { path: 'confirmar-presenca', component: RsvpPage }
+      { path: 'confirmar-presenca', component: RsvpPage },
+      { path: 'sucesso', component: SuccessPage }
     ],
   },
   {
