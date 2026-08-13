@@ -4,7 +4,9 @@
 >
   <img
     [src]="
-      gift.imageUrl ? 'http://localhost:8080' + gift.imageUrl : 'assets/images/placeholder.jpg'
+      gift.imageUrl
+        ? 'https://api.marialauraepedro.com.br' + gift.imageUrl
+        : 'assets/images/placeholder.jpg'
     "
     alt="Foto do presente"
     class="w-full h-48 object-cover"
