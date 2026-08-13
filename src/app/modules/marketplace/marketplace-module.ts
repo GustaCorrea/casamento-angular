@@ -5,9 +5,10 @@ import { CardComponent } from './components/card-component/card-component';
 import { Modal } from './components/modal/modal';
 import { FormsModule } from '@angular/forms';
 import { SuccessPage } from './pages/success-page/success-page';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   declarations: [CardComponent, PrizePage, Modal, SuccessPage],
   exports: [PrizePage],
 })
