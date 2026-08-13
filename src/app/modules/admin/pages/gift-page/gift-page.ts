@@ -135,7 +135,7 @@ export class GiftPage implements OnInit {
   startEditing(gift: Gift): void {
     this.editingId = gift.id;
     this.editedGift = { ...gift };
-    this.imagePreview = gift.imageUrl ? 'http://localhost:8080' + gift.imageUrl : null; 
+    this.imagePreview = gift.imageUrl ? 'https://api.marialauraepedro.com.br' + gift.imageUrl : null; 
     
     this.selectedFile = null; 
   }
