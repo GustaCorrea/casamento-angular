@@ -8,7 +8,7 @@ import { ApiService } from '../../../../core/services/api-service';
   templateUrl: './prize-page.html',
 })
 export class PrizePage implements OnInit {
-  categories: string[] = ['Todos', 'Viagem', 'Experiência', 'Casa', 'Eletrodoméstico'];
+  categories: string[] = ['Todos', 'Viagem', 'Experiencia', 'Casa', 'Eletrodomestico'];
   filter: string = 'Todos';
   selectedGift: Gift | null = null;
   allGifts: Gift[] = [];
