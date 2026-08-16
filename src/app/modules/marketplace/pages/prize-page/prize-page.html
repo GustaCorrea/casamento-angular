@@ -18,18 +18,39 @@
       </p>
     </div>
 
-    <div class="flex flex-wrap justify-center gap-3 mb-10">
-      @for (cat of categories; track cat) {
-        <button
-          (click)="setFilter(cat)"
-          class="px-5 py-2 rounded-full text-sm transition-all"
-          [style.background]="filter === cat ? '#8b5e52' : 'transparent'"
-          [style.color]="filter === cat ? 'white' : '#7a6259'"
-          [style.border]="'1px solid ' + (filter === cat ? '#8b5e52' : 'rgba(139,94,82,0.3)')"
+    <!-- Container Flex para Categorias e Filtro de Ordenação -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
+      <!-- Botões de Categoria -->
+      <div class="flex flex-wrap justify-center md:justify-start gap-3">
+        @for (cat of categories; track cat) {
+          <button
+            (click)="setFilter(cat)"
+            class="px-5 py-2 rounded-full text-sm transition-all"
+            [style.background]="filter === cat ? '#8b5e52' : 'transparent'"
+            [style.color]="filter === cat ? 'white' : '#7a6259'"
+            [style.border]="'1px solid ' + (filter === cat ? '#8b5e52' : 'rgba(139,94,82,0.3)')"
+          >
+            {{ cat }}
+          </button>
+        }
+      </div>
+
+      <!-- Novo Dropdown de Ordenação de Preço -->
+      <div class="flex items-center gap-2 shrink-0">
+        <label for="sortValue" class="text-sm font-medium" style="color: #7a6259"
+          >Ordenar por:</label
         >
-          {{ cat }}
-        </button>
-      }
+        <select
+          id="sortValue"
+          (change)="setSortOrder($event)"
+          class="px-3 py-2 bg-transparent rounded-md text-sm outline-none cursor-pointer transition-colors"
+          style="border: 1px solid rgba(139, 94, 82, 0.3); color: #7a6259"
+        >
+          <option value="padrao">Padrão</option>
+          <option value="menor-maior">Menor para Maior Valor</option>
+          <option value="maior-menor">Maior para Menor Valor</option>
+        </select>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -37,7 +58,10 @@
         <marketplace-card-component [gift]="gift" (onContribute)="openModal($event)">
         </marketplace-card-component>
       } @empty {
-        <div class="col-span-full text-center py-12 text-secondary font-body-md">
+        <div
+          class="col-span-full text-center py-12 text-secondary font-body-md"
+          style="color: #7a6259"
+        >
           Nenhum presente encontrado nesta categoria.
         </div>
       }
