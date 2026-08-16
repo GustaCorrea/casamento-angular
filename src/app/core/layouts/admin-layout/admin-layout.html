@@ -1,6 +1,6 @@
-<div class="flex h-screen bg-brand-light font-sans">
-  <sidebar-component></sidebar-component>
-  <main class="flex-1 overflow-y-auto w-full p-6 md:p-12">
+<div class="flex flex-col md:flex-row h-screen bg-brand-light font-sans overflow-hidden">
+  <sidebar-component class="z-50 shrink-0"></sidebar-component>
+  <main class="flex-1 overflow-y-auto w-full p-4 pb-24 md:p-12 md:pb-12">
     <router-outlet></router-outlet>
   </main>
 </div>

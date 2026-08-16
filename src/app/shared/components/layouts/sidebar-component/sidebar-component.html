@@ -1,16 +1,24 @@
-<aside class="flex flex-col w-64 text-white shadow-lg" style="background: #3e3129">
-  <div class="p-8 border-b border-white/10">
+<aside
+  class="flex flex-row md:flex-col w-full md:w-64 fixed bottom-0 left-0 md:relative h-[72px] md:h-screen text-white shadow-[0_-4px_10px_rgba(0,0,0,0.2)] md:shadow-lg z-50 transition-all"
+  style="background: #3e3129"
+>
+  <!-- Cabeçalho (Escondido no celular, visível no PC) -->
+  <div class="hidden md:block p-8 border-b border-white/10">
     <h1 class="text-xl font-serif leading-tight">Maria Laura &<br />Pedro Guilherme</h1>
     <p class="text-xs text-gray-400 mt-2 font-light">Admin</p>
   </div>
-  <nav class="flex-1 p-4 space-y-2 mt-4">
+
+  <!-- Menu de Navegação -->
+  <nav
+    class="flex-1 flex flex-row md:flex-col p-0 md:p-4 md:space-y-2 md:mt-4 justify-around items-center w-full"
+  >
     <button
       routerLink="/system/presentes"
       routerLinkActive="active-link"
-      class="flex items-center gap-3 px-4 py-3 w-full rounded-r-md text-gray-300 hover:bg-white/5 hover:text-white transition-all cursor-pointer"
+      class="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 px-2 md:px-4 py-2 md:py-3 w-full rounded-md md:rounded-r-md text-gray-300 hover:bg-white/5 hover:text-white transition-all cursor-pointer"
       style="background: none; border: none; text-align: left"
     >
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-6 h-6 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -18,16 +26,16 @@
           d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
         />
       </svg>
-      <span class="text-sm">Presentes</span>
+      <span class="text-[10px] md:text-sm">Presentes</span>
     </button>
 
     <button
       routerLink="/system/convidados"
       routerLinkActive="active-link"
-      class="flex items-center gap-3 px-4 py-3 w-full rounded-r-md text-gray-300 hover:bg-white/5 hover:text-white transition-all cursor-pointer"
+      class="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 px-2 md:px-4 py-2 md:py-3 w-full rounded-md md:rounded-r-md text-gray-300 hover:bg-white/5 hover:text-white transition-all cursor-pointer"
       style="background: none; border: none; text-align: left"
     >
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-6 h-6 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -35,16 +43,16 @@
           d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
         />
       </svg>
-      <span class="text-sm">Convidados</span>
+      <span class="text-[10px] md:text-sm">Convidados</span>
     </button>
 
     <button
       routerLink="/system/cronograma"
       routerLinkActive="active-link"
-      class="flex items-center gap-3 px-4 py-3 w-full rounded-r-md text-gray-300 hover:bg-white/5 hover:text-white transition-all cursor-pointer"
+      class="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 px-2 md:px-4 py-2 md:py-3 w-full rounded-md md:rounded-r-md text-gray-300 hover:bg-white/5 hover:text-white transition-all cursor-pointer"
       style="background: none; border: none; text-align: left"
     >
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-6 h-6 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -52,10 +60,29 @@
           d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
         />
       </svg>
-      <span class="text-sm">Cronograma</span>
+      <span class="text-[10px] md:text-sm">Cronograma</span>
+    </button>
+
+    <!-- Botão Sair (Visível APENAS no celular na barra inferior) -->
+    <button
+      (click)="logout()"
+      class="md:hidden flex flex-col items-center justify-center gap-1 px-2 py-2 w-full rounded-md text-red-400 hover:bg-white/5 hover:text-red-300 transition-all cursor-pointer"
+      style="background: none; border: none"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+        />
+      </svg>
+      <span class="text-[10px]">Sair</span>
     </button>
   </nav>
-  <div class="p-4 border-t border-white/10">
+
+  <!-- Botão Sair (Visível APENAS no PC no rodapé da barra) -->
+  <div class="hidden md:block p-4 border-t border-white/10">
     <button
       (click)="logout()"
       class="flex items-center gap-3 px-4 py-3 w-full text-gray-400 hover:text-white hover:bg-white/5 rounded transition-all cursor-pointer"
