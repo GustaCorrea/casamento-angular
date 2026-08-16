@@ -1,26 +1,26 @@
+<!-- BARRA DO TOPO (Sempre visível, mas no celular mostra apenas a logo centralizada) -->
 <nav
   class="fixed top-0 left-0 right-0 z-50 border-b border-white/20 shadow-sm transition-all duration-300"
   style="background-color: #f3e8e2; font-family: 'Lato', sans-serif"
 >
   <div
-    class="relative z-50 max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between"
-    style="background-color: #f3e8e2"
+    class="relative z-50 max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-center md:justify-between"
   >
+    <!-- LOGO -->
     <a
       routerLink="/"
-      (click)="closeMenu()"
       class="flex items-center gap-2 transition-opacity hover:opacity-80 cursor-pointer"
       style="text-decoration: none"
     >
       <span
-        class="text-[1.2rem] md:text-[1.7rem]"
+        class="text-[1.3rem] md:text-[1.7rem]"
         style="font-family: 'Playfair Display', serif; font-weight: 600; color: #2c1f14"
       >
         Maria Laura & Pedro
       </span>
     </a>
 
-    <!-- MENU DESKTOP -->
+    <!-- MENU DESKTOP (Escondido no celular) -->
     <div class="hidden md:flex items-center gap-8">
       <a
         routerLink="/"
@@ -56,71 +56,73 @@
         Confirme sua presença
       </a>
     </div>
-
-    <!-- BOTÃO HAMBÚRGUER (MOBILE) -->
-    <button
-      (click)="toggleMenu()"
-      class="md:hidden flex flex-col justify-center items-center w-8 h-8 focus:outline-none aria-label='Menu'"
-    >
-      <span
-        class="bg-[#2c1f14] block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"
-        [ngClass]="isMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'"
-      ></span>
-      <span
-        class="bg-[#2c1f14] block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5"
-        [ngClass]="isMenuOpen ? 'opacity-0' : 'opacity-100'"
-      ></span>
-      <span
-        class="bg-[#2c1f14] block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"
-        [ngClass]="isMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'"
-      ></span>
-    </button>
-  </div>
-
-  <!-- MENU MOBILE EXPANSÍVEL -->
-  <div
-    class="md:hidden absolute top-full left-0 right-0 shadow-lg border-b border-black/5 transition-all duration-300 ease-in-out z-40"
-    style="background-color: #fdf8f4"
-    [ngClass]="
-      isMenuOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
-    "
-  >
-    <div class="flex flex-col items-center py-6 gap-6">
-      <a
-        routerLink="/"
-        routerLinkActive
-        #rlaHomeMob="routerLinkActive"
-        [routerLinkActiveOptions]="{ exact: true }"
-        (click)="closeMenu()"
-        class="transition-colors hover:opacity-80 cursor-pointer text-[1.1rem]"
-        [style.color]="rlaHomeMob.isActive ? '#8b5e52' : '#7a6259'"
-        style="letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none"
-      >
-        Início
-      </a>
-
-      <a
-        routerLink="/presentes"
-        routerLinkActive
-        #rlaGiftsMob="routerLinkActive"
-        (click)="closeMenu()"
-        class="transition-colors hover:opacity-80 cursor-pointer text-[1.1rem]"
-        [style.color]="rlaGiftsMob.isActive ? '#8b5e52' : '#7a6259'"
-        style="letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none"
-      >
-        Presentes
-      </a>
-      <a
-        routerLink="/confirmar-presenca"
-        routerLinkActive
-        #rlaConfirmPresenceMob="routerLinkActive"
-        (click)="closeMenu()"
-        class="transition-colors hover:opacity-80 cursor-pointer text-[1.1rem]"
-        [style.color]="rlaConfirmPresenceMob.isActive ? '#8b5e52' : '#7a6259'"
-        style="letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none"
-      >
-        Confirme sua presença
-      </a>
-    </div>
   </div>
 </nav>
+
+<!-- BARRA INFERIOR MOBILE (Estilo Aplicativo - Escondida no PC) -->
+<div
+  class="md:hidden fixed bottom-0 left-0 right-0 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.08)] flex justify-around items-center pt-2"
+  style="
+    background-color: #fdf8f4;
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+    font-family: 'Lato', sans-serif;
+  "
+>
+  <a
+    routerLink="/"
+    routerLinkActive
+    #rlaHomeMob="routerLinkActive"
+    [routerLinkActiveOptions]="{ exact: true }"
+    class="flex flex-col items-center justify-center gap-1 p-2 transition-colors cursor-pointer w-full"
+    [style.color]="rlaHomeMob.isActive ? '#8b5e52' : '#a8958e'"
+    style="text-decoration: none"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+      ></path>
+    </svg>
+    <span class="text-[10px] uppercase font-semibold tracking-wider">Início</span>
+  </a>
+
+  <a
+    routerLink="/presentes"
+    routerLinkActive
+    #rlaGiftsMob="routerLinkActive"
+    class="flex flex-col items-center justify-center gap-1 p-2 transition-colors cursor-pointer w-full"
+    [style.color]="rlaGiftsMob.isActive ? '#8b5e52' : '#a8958e'"
+    style="text-decoration: none"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+      ></path>
+    </svg>
+    <span class="text-[10px] uppercase font-semibold tracking-wider">Presentes</span>
+  </a>
+
+  <a
+    routerLink="/confirmar-presenca"
+    routerLinkActive
+    #rlaConfirmPresenceMob="routerLinkActive"
+    class="flex flex-col items-center justify-center gap-1 p-2 transition-colors cursor-pointer w-full"
+    [style.color]="rlaConfirmPresenceMob.isActive ? '#8b5e52' : '#a8958e'"
+    style="text-decoration: none"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+      ></path>
+    </svg>
+    <span class="text-[10px] uppercase font-semibold tracking-wider">Presença</span>
+  </a>
+</div>
